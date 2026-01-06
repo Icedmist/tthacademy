@@ -173,11 +173,13 @@ export async function enrollInCourse(userId: string, courseId: string): Promise<
 
     const studentProgressRef = doc(db, "studentProgress", userId);
     
-    // Fetch student doc. getStudentProgress will create if it doesn't exist.
+    // Ensure student profile exists by calling getStudentProgress, which creates if it doesn't exist
+    await getStudentProgress(userId, "Student", "", undefined, { includeCourseData: false });
+    
     const studentDoc = await getDoc(studentProgressRef);
 
     if (!studentDoc.exists()) {
-        throw new Error("Student profile does not exist. Cannot enroll.");
+        throw new Error("Failed to create student profile. Cannot enroll.");
     }
     
     const studentData = studentDoc.data();
