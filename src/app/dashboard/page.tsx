@@ -135,6 +135,18 @@ export default function DashboardPage() {
         return;
     }
 
+    // Wait for profile to load before proceeding
+    if (!profile) {
+      setIsDataLoading(true);
+      return;
+    }
+
+    // If profile is loaded but not a student, stop loading
+    if (profile.role !== 'student') {
+      setIsDataLoading(false);
+      return;
+    }
+
     async function fetchData() {
       if (!user) return;
       try {
@@ -164,17 +176,12 @@ export default function DashboardPage() {
         }
     }
     
-    // Only fetch data if the user is a student
-    if(profile?.role === 'student') {
-        fetchData();
-        fetchRecommendations();
-    } else {
-        // If not a student but not redirected yet, stop loading
-        setIsDataLoading(false);
-    }
+    // Profile is loaded and is a student, fetch data
+    fetchData();
+    fetchRecommendations();
   }, [user, profile, isAuthLoading, router]);
   
-  if (isAuthLoading || isDataLoading || !data || profile?.role !== 'student') {
+  if (isAuthLoading || isDataLoading || !data) {
     return <DashboardSkeleton />;
   }
   
