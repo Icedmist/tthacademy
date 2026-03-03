@@ -5,7 +5,6 @@ import { cn } from '@/lib/utils';
 import { Poppins, Montserrat, Playfair_Display } from 'next/font/google';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
-import { ChatbotWrapper } from '@/components/chatbot/ChatbotWrapper';
 import { ClientProviders } from '@/components/layout/ClientProviders';
 
 const poppins = Poppins({
@@ -50,7 +49,6 @@ export default function RootLayout({
           <Header />
           <main className="flex-grow">{children}</main>
           <Footer />
-          <ChatbotWrapper />
         </ClientProviders>
       </body>
     </html>
