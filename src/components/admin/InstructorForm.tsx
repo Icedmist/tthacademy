@@ -14,13 +14,13 @@ import type { Instructor } from '@/lib/types';
 const MAX_FILE_SIZE = 5000000; // 5MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
-export const getInstructorFormSchema = () => z.object({
+export const getInstructorFormSchema = (isEditing: boolean) => z.object({
   name: z.string().min(1, 'Name is required'),
   bio: z.string().min(10, 'Bio must be at least 10 characters'),
   avatarUrl: z.string().url('Must be a valid URL for the avatar image').optional().or(z.literal('')),
   avatarFile: z
     .any()
-    .refine((files) => files?.length <= 1, "Only one image is allowed.")
+    .refine((files) => !files || files.length <= 1, "Only one image is allowed.")
     .refine((files) => !files?.[0] || files?.[0]?.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)
     .refine(
       (files) => !files?.[0] || ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
@@ -31,10 +31,8 @@ export const getInstructorFormSchema = () => z.object({
     linkedin: z.string().url().optional().or(z.literal('')),
   }),
 }).refine(data => {
-    // If editing and an avatarUrl exists, avatarFile is optional
-    if (data.avatarUrl) return true;
-    // If creating, or if editing and no avatarUrl exists, avatarFile is required
-    return data.avatarFile && data.avatarFile.length > 0;
+    // If an avatarUrl exists, or a file is provided, it's valid
+    return !!data.avatarUrl || (data.avatarFile && data.avatarFile.length > 0);
 }, {
     message: "An image is required. Please upload one or provide a URL.",
     path: ["avatarFile"],
@@ -51,8 +49,10 @@ interface InstructorFormProps {
 }
 
 export function InstructorForm({ onSubmit, initialData, isSubmitting, onCancel }: InstructorFormProps) {
+  const formSchema = getInstructorFormSchema(!!initialData);
+  
   const form = useForm<InstructorFormData>({
-    resolver: zodResolver(getInstructorFormSchema()),
+    resolver: zodResolver(formSchema),
     defaultValues: {
       name: initialData?.name ?? '',
       bio: initialData?.bio ?? '',
@@ -63,8 +63,6 @@ export function InstructorForm({ onSubmit, initialData, isSubmitting, onCancel }
       },
     },
   });
-
-  const fileRef = form.register("avatarFile");
 
   return (
     <Form {...form}>
@@ -115,7 +113,7 @@ export function InstructorForm({ onSubmit, initialData, isSubmitting, onCancel }
                 <FormItem>
                     <FormLabel>Or Upload Avatar</FormLabel>
                     <FormControl>
-                        <Input type="file" {...fileRef} />
+                        <Input type="file" onChange={(e) => field.onChange(e.target.files)} />
                     </FormControl>
                     <FormMessage />
                 </FormItem>
