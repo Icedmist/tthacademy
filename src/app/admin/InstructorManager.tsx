@@ -14,6 +14,7 @@ import { Pencil, Trash2, UserPlus, Twitter, Linkedin } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { InstructorForm, getInstructorFormSchema } from '@/components/admin/InstructorForm';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { z } from 'zod';
 import { InstructorSchema } from '@/lib/types';
@@ -73,9 +74,11 @@ export function InstructorManager() {
         const NewInstructorSchema = InstructorSchema.omit({ id: true });
         const validatedData = NewInstructorSchema.parse({
             name: data.name,
+            email: data.email, // Added
+            role: data.role, // Added
             bio: data.bio,
             socials: data.socials,
-            avatarUrl: avatarUrl, // Use the potentially new URL
+            avatarUrl: avatarUrl,
         });
         
         if (editingInstructor) {
@@ -179,7 +182,8 @@ export function InstructorManager() {
         <TableHeader>
             <TableRow>
                 <TableHead>Name</TableHead>
-                <TableHead>Bio</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Title/Role</TableHead>
                 <TableHead>Socials</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -188,7 +192,10 @@ export function InstructorManager() {
             {instructors.length > 0 ? instructors.map((instructor) => (
             <TableRow key={instructor.id}>
                 <TableCell className="font-medium">{instructor.name}</TableCell>
-                <TableCell className="text-muted-foreground max-w-sm">{instructor.bio}</TableCell>
+                <TableCell className="text-muted-foreground">{instructor.email}</TableCell>
+                <TableCell>
+                    <Badge variant="secondary" className="whitespace-nowrap">{instructor.role || 'Instructor'}</Badge>
+                </TableCell>
                 <TableCell>
                 <div className='flex gap-2'>
                     {instructor.socials?.twitter && (

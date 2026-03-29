@@ -16,6 +16,8 @@ const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/web
 
 export const getInstructorFormSchema = (isEditing: boolean) => z.object({
   name: z.string().min(1, 'Name is required'),
+  email: z.string().email('Valid email is required'),
+  role: z.string().optional().or(z.literal('')),
   bio: z.string().min(10, 'Bio must be at least 10 characters'),
   avatarUrl: z.string().url('Must be a valid URL for the avatar image').optional().or(z.literal('')),
   avatarFile: z
@@ -55,6 +57,8 @@ export function InstructorForm({ onSubmit, initialData, isSubmitting, onCancel }
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: initialData?.name ?? '',
+      email: initialData?.email ?? '',
+      role: initialData?.role ?? '',
       bio: initialData?.bio ?? '',
       avatarUrl: initialData?.avatarUrl ?? '',
       socials: {
@@ -75,6 +79,19 @@ export function InstructorForm({ onSubmit, initialData, isSubmitting, onCancel }
               <FormLabel>Full Name</FormLabel>
               <FormControl>
                 <Input icon={<User />} placeholder="e.g., Jane Doe" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Professional Email (for dashboard access)</FormLabel>
+              <FormControl>
+                <Input placeholder="e.g., nasir@academy.com" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -118,6 +135,19 @@ export function InstructorForm({ onSubmit, initialData, isSubmitting, onCancel }
                     <FormMessage />
                 </FormItem>
             )}
+        />
+        <FormField
+          control={form.control}
+          name="role"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Title / Role (e.g., Co-founder)</FormLabel>
+              <FormControl>
+                <Input placeholder="e.g., Co-founder & Lead Instructor" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
          <FormField
           control={form.control}
