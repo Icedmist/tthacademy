@@ -81,7 +81,10 @@ export default function AdminUsersPage() {
       const progressCol = collection(db, 'studentProgress');
       const q = query(progressCol);
       const progressSnapshot = await getDocs(q);
-      const userProgresses = progressSnapshot.docs.map(doc => doc.data() as StudentProgress);
+      const userProgresses = progressSnapshot.docs.map(doc => ({
+          ...doc.data(),
+          studentId: doc.id // Explicitly map doc.id to studentId
+      } as StudentProgress));
       setUsers(userProgresses);
 
       const referrerIds = new Set(userProgresses.map(u => u.referredBy).filter(Boolean) as string[]);
@@ -147,6 +150,7 @@ export default function AdminUsersPage() {
   const getRoleBadgeVariant = (role: UserRole) => {
     switch (role) {
       case 'admin': return 'default';
+      case 'instructor': return 'secondary';
       default: return 'outline';
     }
   }
@@ -160,9 +164,24 @@ export default function AdminUsersPage() {
           User Management
         </h1>
       </div>
-      <p className="text-muted-foreground mb-8">
+      <p className="text-muted-foreground mb-4">
         View and manage all registered users with profiles in the system.
       </p>
+
+      {/* SOURCE INFO BANNER */}
+      <div className="mb-8 p-4 bg-muted/50 rounded-lg border border-border flex items-start gap-4 text-sm text-muted-foreground">
+          <div className="p-2 rounded-full bg-primary/10 text-primary shrink-0">
+              <UserCog className="h-5 w-5" />
+          </div>
+          <div className="space-y-1">
+              <p className="font-semibold text-foreground">Data Source: studentProgress Collection</p>
+              <p>
+                  This dashboard reflects users who have initialized their profiles in **Firestore**. 
+                  Because Firebase Authentication does not allow direct user listing on the client, we use 
+                  a "studentProgress" mirror to manage roles, progress, and referrals.
+              </p>
+          </div>
+      </div>
 
       <Dialog open={!!editingUser} onOpenChange={(isOpen) => !isOpen && setEditingUser(null)}>
         <DialogContent>
@@ -179,6 +198,7 @@ export default function AdminUsersPage() {
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="student">Student</SelectItem>
+                        <SelectItem value="instructor">Instructor</SelectItem>
                         <SelectItem value="admin">Admin</SelectItem>
                     </SelectContent>
                 </Select>
