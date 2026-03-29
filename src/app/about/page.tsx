@@ -1,4 +1,6 @@
 
+export const dynamic = 'force-dynamic';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Target, Lightbulb, Users } from 'lucide-react';
 import { getDocs, collection, query, orderBy } from 'firebase/firestore';
@@ -10,15 +12,22 @@ import { Twitter, Linkedin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
-async function getTeamMembers(): Promise<TeamMember[]> {
+import { InstructorSchema } from '@/lib/types';
+
+async function getTeamMembers(): Promise<any[]> {
   try {
-    const teamCollection = collection(db, 'team');
-    const q = query(teamCollection, orderBy('name', 'asc'));
-    const teamSnapshot = await getDocs(q);
-    const teamList = teamSnapshot.docs.map(d => TeamMemberSchema.parse({ id: d.id, ...d.data() }));
-    return teamList;
+    const instructorCollection = collection(db, 'instructors');
+    const q = query(instructorCollection, orderBy('name', 'asc'));
+    const snapshot = await getDocs(q);
+    const instructors = snapshot.docs.map(d => InstructorSchema.parse({ id: d.id, ...d.data() }));
+    
+    // Map instructor fields to what the About page expects
+    return instructors.map(i => ({
+        ...i,
+        role: i.role || 'Instructor' // Default role if not specified
+    }));
   } catch (error) {
-    console.error("Failed to fetch team members for about page", error);
+    console.error("Failed to fetch instructors for about page", error);
     return [];
   }
 }
