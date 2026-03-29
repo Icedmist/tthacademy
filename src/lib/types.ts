@@ -51,11 +51,15 @@ export const CourseSchema = NewCourseSchema.extend({
 });
 export type Course = z.infer<typeof CourseSchema>;
 
+export const UserRoleSchema = z.enum(['student', 'admin', 'instructor']);
+export type UserRole = z.infer<typeof UserRoleSchema>;
 
 // Zod schema for StudentProgress
 export const StudentProgressSchema = z.object({
     studentId: z.string(),
     name: z.string(),
+    email: z.string().email(),
+    role: UserRoleSchema.default('student'),
     enrolledCourses: z.array(CourseSchema),
     overallProgress: z.number(),
     completedCourses: z.number(),
@@ -63,20 +67,6 @@ export const StudentProgressSchema = z.object({
     referredBy: z.string().optional(),
 });
 export type StudentProgress = z.infer<typeof StudentProgressSchema>;
-
-
-// Zod schema for an Instructor
-export const InstructorSchema = z.object({
-  id: z.string(),
-  name: z.string().min(1, 'Name is required'),
-  bio: z.string().min(10, 'Bio must be at least 10 characters'),
-  avatarUrl: z.string().url('Must be a valid URL for the avatar image'),
-  socials: z.object({
-    twitter: z.string().url().optional().or(z.literal('')),
-    linkedin: z.string().url().optional().or(z.literal('')),
-  }).optional(),
-});
-export type Instructor = z.infer<typeof InstructorSchema>;
 
 // Zod schema for a Team Member
 export const TeamMemberRoleSchema = z.enum(['Co-founder', 'Lead Instructor', 'Community Manager']);
@@ -162,3 +152,17 @@ export const AttendeeSchema = z.object({
     registeredAt: z.any(),
 });
 export type Attendee = z.infer<typeof AttendeeSchema>;
+
+
+// Zod schema for an Instructor
+export const InstructorSchema = z.object({
+  id: z.string(),
+  name: z.string().min(1, 'Name is required'),
+  bio: z.string().min(10, 'Bio must be at least 10 characters'),
+  avatarUrl: z.string().url('Must be a valid URL for the avatar image'),
+  socials: z.object({
+    twitter: z.string().url().optional().or(z.literal('')),
+    linkedin: z.string().url().optional().or(z.literal('')),
+  }).optional(),
+});
+export type Instructor = z.infer<typeof InstructorSchema>;
