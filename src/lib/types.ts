@@ -41,6 +41,7 @@ export const NewCourseSchema = z.object({
   price: z.number().min(0, 'Price cannot be negative'),
   duration: z.string().min(1, 'Duration is required'),
   instructor: z.string().min(1, 'Instructor name is required'),
+  instructorId: z.string().optional(),
 });
 export type NewCourse = z.infer<typeof NewCourseSchema>;
 
@@ -158,6 +159,8 @@ export type Attendee = z.infer<typeof AttendeeSchema>;
 export const InstructorSchema = z.object({
   id: z.string(),
   name: z.string().min(1, 'Name is required'),
+  email: z.string().email('Valid email is required'), // Added for user identification
+  role: z.string().optional(), // Added to support Team member view
   bio: z.string().min(10, 'Bio must be at least 10 characters'),
   avatarUrl: z.string().url('Must be a valid URL for the avatar image'),
   socials: z.object({
