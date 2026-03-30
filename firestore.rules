@@ -1,3 +1,4 @@
+
 rules_version = '2';
 
 service cloud.firestore {
@@ -8,11 +9,10 @@ service cloud.firestore {
     // ===============================================================
 
     function isAdmin() {
-      // IMPORTANT: Keep this map in sync with your src/lib/admin.ts
-      let adminUIDs = {
-        'dqrHnJtM27bMpNudHxO5hL3wsNE3': true
-      };
-      return request.auth != null && request.auth.uid in adminUIDs;
+      // Check the user's custom claim or a document in a separate 'roles' collection.
+      // For this app, we check a field in their own studentProgress doc.
+      // This allows an admin to elevate other users.
+      return get(/databases/$(database)/documents/studentProgress/$(request.auth.uid)).data.role == 'admin';
     }
 
     function isSignedIn() {
@@ -23,8 +23,16 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == userId;
     }
 
+    function isReadingPublicProfileData() {
+      // Allows reading only a few public fields from a user's profile
+      // This is used for features like showing a referrer's name.
+      return isSignedIn() && (
+        resource.data.keys().hasOnly(['studentId', 'name'])
+      );
+    }
+
     // ===============================================================
-    // 2. PUBLIC CONTENT (Courses, Instructors, Blog, Events)
+    // 2. PUBLIC CONTENT (Courses, Team, Blog, Events)
     // ===============================================================
 
     // COURSES: Allows reading the course AND all subcollections (lessons, quizzes, etc.)
@@ -39,7 +47,7 @@ service cloud.firestore {
       }
     }
     
-    match /instructors/{instructorId} {
+    match /team/{memberId} {
       allow read: if true;
       allow create, update, delete: if isAdmin();
     }
@@ -78,10 +86,23 @@ service cloud.firestore {
     // ===============================================================
 
     // STUDENT PROGRESS
-    // Frontend usage: db.collection('studentProgress').doc(user.uid).set(data)
     match /studentProgress/{userId} {
-      allow get, list: if isAdmin();
-      allow read, write: if isOwner(userId);
+      // Allow a user to read their own full profile
+      // Allow any signed-in user to read only public fields (e.g., for referrals)
+      allow get: if isOwner(userId) || isReadingPublicProfileData();
+
+      // Only Admins can list all users
+      allow list: if isAdmin();
+      
+      // User can create their own doc on signup.
+      allow create: if isOwner(userId);
+      
+      // A user can update their own data.
+      // An admin can update anyone's role.
+      allow update: if isOwner(userId) || isAdmin();
+
+      // Only admins can delete user profiles
+      allow delete: if isAdmin();
     }
 
     // FEEDBACK
