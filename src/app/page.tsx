@@ -5,8 +5,8 @@ import { getEvents } from '@/services/event-data';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Suspense } from 'react';
 import HomePageClient from './home-page-client';
-import type { Course, PlainBlog, PlainEvent, Instructor } from '@/lib/types';
-import { getInstructors } from '@/services/instructor-data';
+import type { Course, PlainBlog, PlainEvent, TeamMember } from '@/lib/types';
+import { getTeamMembers } from '@/services/team-data';
 
 function HomePageSkeleton() {
     return (
@@ -27,11 +27,11 @@ function HomePageSkeleton() {
 }
 
 async function PageContent() {
-    const [allCourses, posts, events, instructors] = await Promise.all([
+    const [allCourses, posts, events, teamMembers] = await Promise.all([
         getCourses(),
         getPosts('published'),
         getEvents('upcoming'),
-        getInstructors(),
+        getTeamMembers()
     ]);
     
     // Get one course from each category for the "Featured" section
@@ -47,7 +47,7 @@ async function PageContent() {
     const latestPosts: PlainBlog[] = posts.slice(0, 3).map(post => ({
         ...post,
         createdAt: post.createdAt.toDate().toISOString(),
-        publishedAt: post.publishedAt?.toDate().toISOString(),
+        publishedAt: post.publishedAt?.toDate().toISOString() || '',
     }));
 
     const upcomingEvents: PlainEvent[] = events.slice(0, 3).map(event => ({
@@ -55,13 +55,15 @@ async function PageContent() {
         date: event.date.toDate().toISOString(),
     }));
 
-    const featuredInstructors: Instructor[] = instructors.slice(0, 3);
+    // Using Team Members for the homepage section
+    const teamForHomePage = teamMembers.slice(0, 3);
+
 
     return <HomePageClient 
         courses={featuredCourses} 
         posts={latestPosts} 
         events={upcomingEvents}
-        instructors={featuredInstructors}
+        teamMembers={teamForHomePage}
     />;
 }
 
