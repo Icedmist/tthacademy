@@ -1,4 +1,6 @@
 
+export const dynamic = 'force-dynamic';
+
 import { getCourses } from '@/services/course-data';
 import { getPosts } from '@/services/blog-data';
 import { getEvents } from '@/services/event-data';
@@ -27,12 +29,17 @@ function HomePageSkeleton() {
 }
 
 async function PageContent() {
-    const [allCourses, posts, events, teamMembers] = await Promise.all([
+    const results = await Promise.allSettled([
         getCourses(),
         getPosts('published'),
         getEvents('upcoming'),
         getTeamMembers()
     ]);
+
+    const allCourses = results[0].status === 'fulfilled' ? results[0].value : [];
+    const posts = results[1].status === 'fulfilled' ? results[1].value : [];
+    const events = results[2].status === 'fulfilled' ? results[2].value : [];
+    const teamMembers = results[3].status === 'fulfilled' ? results[3].value : [];
     
     // Get one course from each category for the "Featured" section
     const featuredCourses: Course[] = [];
@@ -46,13 +53,13 @@ async function PageContent() {
 
     const latestPosts: PlainBlog[] = posts.slice(0, 3).map(post => ({
         ...post,
-        createdAt: post.createdAt.toDate().toISOString(),
-        publishedAt: post.publishedAt?.toDate().toISOString() || '',
+        createdAt: post.createdAt?.toDate ? post.createdAt.toDate().toISOString() : new Date().toISOString(),
+        publishedAt: post.publishedAt?.toDate ? post.publishedAt.toDate().toISOString() : undefined,
     }));
 
     const upcomingEvents: PlainEvent[] = events.slice(0, 3).map(event => ({
         ...event,
-        date: event.date.toDate().toISOString(),
+        date: event.date?.toDate ? event.date.toDate().toISOString() : new Date().toISOString(),
     }));
 
     // Using Team Members for the homepage section
