@@ -3,8 +3,10 @@
 
 import { db } from '@/lib/firebase';
 import { doc, getDoc, setDoc, updateDoc, collection, getDocs, writeBatch } from "firebase/firestore"; 
-import type { StudentProgress, Course as CourseType } from '@/lib/types';
+import type { StudentProgress, Course as CourseType, UserRole } from '@/lib/types';
 import { getCourse, getCourses } from './course-data';
+import { ADMIN_UIDS } from '@/lib/admin';
+import { errorEmitter } from '@/firebase/error-emitter';
 
 // This is the shape of the data stored in the 'enrolledCourses' array in Firestore.
 // It's a lightweight reference to the full course object.
@@ -21,76 +23,124 @@ type EnrolledCourseRef = {
 /**
  * Fetches a student's progress from Firestore.
  * If the student doesn't have a profile yet, it creates one.
- * The full course data is merged from the `courses` collection.
+ * The full course data can be optionally merged from the `courses` collection.
  * @param userId The UID of the authenticated user.
  * @param name The display name of the user, used for creating a new profile.
+ * @param email The email of the user.
  * @param referralCode The UID of the user who referred this student.
- * @returns The student's progress data, with full course objects merged in.
+ * @param options An object to control optional behaviors, like merging course data.
+ * @returns The student's progress data.
  */
-export async function getStudentProgress(userId: string, name?: string, referralCode?: string): Promise<StudentProgress> {
+export async function getStudentProgress(
+    userId: string, 
+    name?: string, 
+    email?: string, 
+    referralCode?: string,
+    options: { includeCourseData?: boolean } = { includeCourseData: true }
+): Promise<StudentProgress> {
     if (!db) {
         throw new Error("Firestore is not initialized. Check your Firebase configuration.");
     }
 
     const docRef = doc(db, "studentProgress", userId);
+    
+    // Determine role FIRST. An admin is an admin regardless of their profile doc.
+    const role: UserRole = ADMIN_UIDS.includes(userId) ? 'admin' : 'student';
+
     const docSnap = await getDoc(docRef);
-    const allCourses = await getCourses(); // Fetch all course data once
 
     if (docSnap.exists()) {
         const studentData = docSnap.data();
         const enrolledCourseRefs: EnrolledCourseRef[] = studentData.enrolledCourses || [];
 
-        // Merge static course data with student's progress
-        const enrolledCourses: CourseType[] = enrolledCourseRefs.map(ref => {
-            const fullCourseData = allCourses.find(c => c.id === ref.id);
-            if (!fullCourseData) return null; // Course might have been deleted
+        let enrolledCourses: CourseType[] = [];
 
-            // Create a deep copy to avoid modifying the original data
-            const courseWithProgress = JSON.parse(JSON.stringify(fullCourseData));
-
-            courseWithProgress.progress = ref.progress;
+        if (options.includeCourseData && enrolledCourseRefs.length > 0) {
+            const allCourses = await getCourses();
             
-            // Mark lessons as completed based on the reference
-            courseWithProgress.modules.forEach((module: any, mIdx: number) => {
-                module.lessons.forEach((lesson: any, lIdx: number) => {
-                    lesson.completed = !!ref.completedLessons?.[mIdx]?.[lIdx];
-                });
-            });
+            // Merge static course data with student's progress
+            enrolledCourses = enrolledCourseRefs.map(ref => {
+                const fullCourseData = allCourses.find(c => c.id === ref.id);
+                if (!fullCourseData) return null; // Course might have been deleted
 
-            return courseWithProgress;
-        }).filter(c => c !== null) as CourseType[];
+                // Create a deep copy to avoid modifying the original data
+                const courseWithProgress = JSON.parse(JSON.stringify(fullCourseData));
+
+                courseWithProgress.progress = ref.progress;
+                
+                // Mark lessons as completed based on the reference
+                courseWithProgress.modules.forEach((module: any, mIdx: number) => {
+                    module.lessons.forEach((lesson: any, lIdx: number) => {
+                        lesson.completed = !!ref.completedLessons?.[mIdx]?.[lIdx];
+                    });
+                });
+
+                return courseWithProgress;
+            }).filter(c => c !== null) as CourseType[];
+        }
         
         const metrics = calculateProgressMetrics(enrolledCourses);
+        
+        // Ensure the role in the database is consistent with the hardcoded admin list
+        const finalRole = ADMIN_UIDS.includes(userId) ? 'admin' : (studentData.role || 'student');
 
+        if (finalRole !== studentData.role) {
+            await updateDoc(docRef, { role: finalRole });
+        }
+        
         return {
             studentId: userId,
             name: studentData.name,
-            enrolledCourses,
+            email: studentData.email,
+            role: finalRole,
+            enrolledCourses: enrolledCourses,
             referredBy: studentData.referredBy,
             ...metrics
         };
 
     } else {
         console.log(`No progress document for user ${userId}. Creating new profile.`);
+        
         const newStudentData = {
             studentId: userId,
             name: name || "New Student",
-            enrolledCourses: [], // This will be the lightweight reference array
+            email: email || "",
+            role: role, // Use the pre-determined role
+            enrolledCourses: [],
             referredBy: referralCode || undefined,
         };
 
-        await setDoc(docRef, newStudentData);
+        try {
+            await setDoc(docRef, newStudentData);
+        } catch (error: any) {
+            if (error.code === 'permission-denied') {
+                errorEmitter.emit('permission-error', {
+                    path: `document 'studentProgress/${userId}'`,
+                    operation: 'create',
+                    requestResourceData: newStudentData
+                });
+            }
+             // Even if creation fails, return a default structure so the app doesn't crash
+             return {
+                ...newStudentData,
+                enrolledCourses: [],
+                overallProgress: 0,
+                completedCourses: 0,
+                coursesInProgress: 0,
+            };
+        }
         
         // Return the full StudentProgress structure
         return {
              ...newStudentData,
-             enrolledCourses: [], // This is the full CourseType array, which is empty initially
+             enrolledCourses: [],
              overallProgress: 0,
              completedCourses: 0,
              coursesInProgress: 0,
         };
     }
 }
+
 
 /**
  * Recalculates progress metrics based on the current list of enrolled courses.
@@ -101,10 +151,10 @@ function calculateProgressMetrics(enrolledCourses: CourseType[]) {
     if (!enrolledCourses || enrolledCourses.length === 0) {
         return { coursesInProgress: 0, completedCourses: 0, overallProgress: 0 };
     }
-    const coursesInProgress = enrolledCourses.filter(c => c.progress > 0 && c.progress < 100).length;
+    const coursesInProgress = enrolledCourses.filter(c => (c.progress ?? 0) > 0 && (c.progress ?? 0) < 100).length;
     const completedCourses = enrolledCourses.filter(c => c.progress === 100).length;
-    const totalProgress = enrolledCourses.reduce((sum, course) => sum + course.progress, 0);
-    const overallProgress = Math.round(totalProgress / enrolledCourses.length);
+    const totalProgress = enrolledCourses.reduce((sum, course) => sum + (course.progress ?? 0), 0);
+    const overallProgress = enrolledCourses.length > 0 ? Math.round(totalProgress / enrolledCourses.length) : 0;
 
     return { coursesInProgress, completedCourses, overallProgress };
 }
@@ -122,15 +172,18 @@ export async function enrollInCourse(userId: string, courseId: string): Promise<
     if (!courseToEnroll) throw new Error("Course not found.");
 
     const studentProgressRef = doc(db, "studentProgress", userId);
+    
+    // Ensure student profile exists by calling getStudentProgress, which creates if it doesn't exist
+    await getStudentProgress(userId, "Student", "", undefined, { includeCourseData: false });
+    
     const studentDoc = await getDoc(studentProgressRef);
 
     if (!studentDoc.exists()) {
-        // Pass a default name if creating a profile for the first time during enrollment
-        await getStudentProgress(userId, "New Student"); 
+        throw new Error("Failed to create student profile. Cannot enroll.");
     }
     
-    const studentData = (await getDoc(studentProgressRef)).data()!;
-    const currentEnrolledRefs: EnrolledCourseRef[] = studentData.enrolledCourses || [];
+    const studentData = studentDoc.data();
+    const currentEnrolledRefs: EnrolledCourseRef[] = studentData?.enrolledCourses || [];
 
     if (currentEnrolledRefs.some(c => c.id === courseId)) {
         console.log(`User ${userId} is already enrolled in course ${courseId}.`);
@@ -204,4 +257,39 @@ export async function updateLessonStatus(userId: string, courseId: string, modul
     await updateDoc(studentProgressRef, {
         enrolledCourses: updatedCourseRefs,
     });
+}
+
+export async function updateUserRole(userId: string, role: UserRole): Promise<void> {
+    if (!db) throw new Error("Firestore not initialized.");
+    const docRef = doc(db, 'studentProgress', userId);
+    await updateDoc(docRef, { role });
+}
+
+export async function getAllStudentProgress(): Promise<StudentProgress[]> {
+  const progressCol = collection(db, 'studentProgress');
+  const snapshot = await getDocs(progressCol);
+  const allCourses = await getCourses();
+
+  return snapshot.docs.map(doc => {
+    const data = doc.data();
+    const enrolledCourseRefs: EnrolledCourseRef[] = data.enrolledCourses || [];
+
+    const enrolledCourses = enrolledCourseRefs.map(ref => {
+      const courseData = allCourses.find(c => c.id === ref.id);
+      if (!courseData) return null;
+      return { ...courseData, progress: ref.progress };
+    }).filter(Boolean) as CourseType[];
+
+    const metrics = calculateProgressMetrics(enrolledCourses);
+
+    return {
+      studentId: doc.id,
+      name: data.name,
+      email: data.email,
+      role: data.role || 'student',
+      enrolledCourses: enrolledCourses,
+      referredBy: data.referredBy,
+      ...metrics,
+    };
+  });
 }

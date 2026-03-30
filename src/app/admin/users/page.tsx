@@ -1,182 +1,64 @@
-
 'use client';
-
-import {
-  Card,
-  CardContent,
-} from '@/components/ui/card';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Users, Pencil, Trash2 } from 'lucide-react';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { useEffect, useState } from 'react';
-import type { StudentProgress } from '@/lib/types';
+import { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase';
-import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
-import { useToast } from '@/hooks/use-toast';
-import { Skeleton } from '@/components/ui/skeleton';
-import { ADMIN_UIDS } from '@/lib/admin';
-import { useAuth } from '@/hooks/use-auth';
-
-const ProgressBadge = ({ progress }: { progress: number }) => {
-    let variant: "success" | "warning" | "destructive" | "secondary" = "secondary";
-    if (progress === 100) {
-        variant = "success";
-    } else if (progress > 0) {
-        variant = "warning";
-    } else {
-        variant = "destructive";
-    }
-    return <Badge variant={variant}>{progress}%</Badge>
-}
+import { collection, getDocs, doc, updateDoc, query, orderBy } from 'firebase/firestore';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { UserCog } from 'lucide-react';
+import { StudentProfile } from '@/lib/types';
 
 export default function AdminUsersPage() {
-  const [users, setUsers] = useState<StudentProgress[]>([]);
-  const [isLoadingUsers, setIsLoadingUsers] = useState(true);
-  const [referrers, setReferrers] = useState<Record<string, string>>({});
-  const { toast } = useToast();
-  const { user } = useAuth();
+    const [users, setUsers] = useState<StudentProfile[]>([]);
+    const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchUsers() {
-      if (!user) return; 
+    useEffect(() => {
+        const fetchUsers = async () => {
+            const q = query(collection(db, 'studentProgress'), orderBy('name', 'asc'));
+            const snapshot = await getDocs(q);
+            setUsers(snapshot.docs.map(doc => ({ 
+                ...doc.data(), 
+                studentId: doc.id 
+            } as StudentProfile)));
+            setLoading(false);
+        };
+        fetchUsers();
+    }, []);
 
-      try {
-        setIsLoadingUsers(true);
-        if (!db) {
-            throw new Error("Firestore is not initialized.");
-        }
-        const progressCol = collection(db, 'studentProgress');
-        const progressSnapshot = await getDocs(progressCol);
-        const userProgresses = progressSnapshot.docs.map(doc => doc.data() as StudentProgress);
-        setUsers(userProgresses);
+    const updateRole = async (userId: string, newRole: string) => {
+        await updateDoc(doc(db, 'studentProgress', userId), { role: newRole });
+        setUsers(users.map(u => u.studentId === userId ? { ...u, role: newRole } : u));
+    };
 
-        const referrerIds = new Set(userProgresses.map(u => u.referredBy).filter(Boolean) as string[]);
-        const referrerData: Record<string, string> = {};
-
-        for (const uid of referrerIds) {
-          if (!referrerData[uid]) { // Fetch only if not already fetched
-            const userDoc = await getDoc(doc(db, 'studentProgress', uid));
-            if (userDoc.exists()) {
-                referrerData[uid] = userDoc.data().name;
-            } else {
-                referrerData[uid] = 'Unknown User';
-            }
-          }
-        }
-        setReferrers(referrerData);
-
-      } catch (error: any) {
-        console.error("Error fetching user list:", error);
-        toast({
-            title: "Error Fetching Users",
-            description: `Could not load student list. This might be a permissions issue. Error: ${error.message}`,
-            variant: "destructive",
-        })
-      } finally {
-        setIsLoadingUsers(false);
-      }
-    }
-    fetchUsers();
-  }, [toast, user]);
-
-  return (
-    <TooltipProvider>
-       <div className="flex items-center gap-2 mb-4">
-        <Users className="h-8 w-8 text-primary" />
-        <h1 className="text-3xl md:text-4xl font-headline font-bold">
-          User Management
-        </h1>
-      </div>
-      <p className="text-muted-foreground mb-8">
-        View and manage all registered users with profiles in the system.
-      </p>
-
-      <Card className="bg-card/80 backdrop-blur-sm border-border/50">
-        <CardContent className='pt-6'>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Referred By</TableHead>
-                <TableHead>Courses Enrolled</TableHead>
-                <TableHead>Overall Progress</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoadingUsers ? (
-                [...Array(5)].map((_, i) => (
-                  <TableRow key={i}>
-                    <TableCell colSpan={6}>
-                      <Skeleton className="h-8 w-full" />
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : users.length > 0 ? (
-                users.map((user) => (
-                <TableRow key={user.studentId}>
-                  <TableCell className="font-medium">{user.name}</TableCell>
-                  <TableCell>
-                      {ADMIN_UIDS.includes(user.studentId) ? (
-                          <Badge variant="default">Admin</Badge>
-                      ) : (
-                          <Badge variant="outline">Student</Badge>
-                      )}
-                  </TableCell>
-                  <TableCell>
-                      {user.referredBy ? referrers[user.referredBy] || 'N/A' : 'N/A'}
-                  </TableCell>
-                  <TableCell>
-                    {user.enrolledCourses.length}
-                  </TableCell>
-                    <TableCell>
-                      <ProgressBadge progress={user.overallProgress} />
-                  </TableCell>
-                  <TableCell className="text-right space-x-2">
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button variant="ghost" size="icon" disabled>
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent><p>Edit user (Not implemented)</p></TooltipContent>
-                    </Tooltip>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" disabled>
-                            <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent><p>Delete user (Not implemented)</p></TooltipContent>
-                    </Tooltip>
-                  </TableCell>
-                </TableRow>
-              ))) : (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center text-muted-foreground">
-                    No users have created a profile yet, or your security rules are preventing access.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-    </TooltipProvider>
-  );
+    return (
+        <div className="p-8">
+            <h1 className="text-3xl font-bold mb-8 flex items-center gap-3">
+                <UserCog className="h-8 w-8 text-primary" />
+                User Management
+            </h1>
+            <div className="grid gap-6">
+                {users.map(user => (
+                    <Card key={user.studentId}>
+                        <CardHeader>
+                            <CardTitle className="text-lg">{user.name}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="flex justify-between items-center">
+                            <p className="text-sm text-muted-foreground">{user.email}</p>
+                            <div className="flex gap-2">
+                                <Button 
+                                    size="sm" 
+                                    variant={user.role === 'admin' ? 'default' : 'outline'}
+                                    onClick={() => updateRole(user.studentId, 'admin')}
+                                >Admin</Button>
+                                <Button 
+                                    size="sm" 
+                                    variant={user.role === 'student' ? 'default' : 'outline'}
+                                    onClick={() => updateRole(user.studentId, 'student')}
+                                >Student</Button>
+                            </div>
+                        </CardContent>
+                    </Card>
+                ))}
+            </div>
+        </div>
+    );
 }
