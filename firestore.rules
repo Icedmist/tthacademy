@@ -9,10 +9,16 @@ service cloud.firestore {
     // ===============================================================
 
     function isAdmin() {
-      // Check the user's custom claim or a document in a separate 'roles' collection.
-      // For this app, we check a field in their own studentProgress doc.
-      // This allows an admin to elevate other users.
-      return get(/databases/$(database)/documents/studentProgress/$(request.auth.uid)).data.role == 'admin';
+      return isSignedIn() && (
+        request.auth.uid == 'dqrHnJtM27bMpNudHxO5hL3wsNE3' || 
+        (exists(/databases/$(database)/documents/studentProgress/$(request.auth.uid)) && 
+         get(/databases/$(database)/documents/studentProgress/$(request.auth.uid)).data.role == 'admin')
+      );
+    }
+
+    // Global bypass for the SuperAdmin during setup
+    function isSuperAdmin() {
+      return isSignedIn() && request.auth.uid == 'dqrHnJtM27bMpNudHxO5hL3wsNE3';
     }
 
     function isSignedIn() {
@@ -38,29 +44,33 @@ service cloud.firestore {
     // COURSES: Allows reading the course AND all subcollections (lessons, quizzes, etc.)
     match /courses/{courseId} {
       allow read: if true;
-      allow create, update, delete: if isAdmin();
+      allow create, update, delete: if isSuperAdmin() || isAdmin();
       
-      // Recursive match for any subcollections inside a course
       match /{allSubcollections=**} {
         allow read: if true;
-        allow create, update, delete: if isAdmin();
+        allow create, update, delete: if isSuperAdmin() || isAdmin();
       }
     }
     
     match /team/{memberId} {
       allow read: if true;
-      allow create, update, delete: if isAdmin();
+      allow create, update, delete: if isSuperAdmin() || isAdmin();
+    }
+
+    match /instructors/{instructorId} {
+      allow read: if true;
+      allow create, update, delete: if isSuperAdmin() || isAdmin();
     }
     
     match /blogPosts/{postId} {
       allow read: if true;
-      allow create, update, delete: if isAdmin();
+      allow create, update, delete: if isSuperAdmin() || isAdmin();
     }
 
     // EVENTS
     match /events/{eventId} {
       allow read: if true;
-      allow create, update, delete: if isAdmin();
+      allow create, update, delete: if isSuperAdmin() || isAdmin();
       
       // ATTENDEES SUBCOLLECTION
       match /attendees/{userId} {
@@ -95,14 +105,14 @@ service cloud.firestore {
       allow list: if isAdmin();
       
       // User can create their own doc on signup.
-      allow create: if isOwner(userId);
+      allow create: if isOwner(userId) || isSuperAdmin();
       
       // A user can update their own data.
       // An admin can update anyone's role.
-      allow update: if isOwner(userId) || isAdmin();
+      allow update: if isOwner(userId) || isAdmin() || isSuperAdmin();
 
-      // Only admins can delete user profiles
-      allow delete: if isAdmin();
+      // Only admins or SuperAdmin can delete user profiles
+      allow delete: if isSuperAdmin() || isAdmin();
     }
 
     // FEEDBACK
