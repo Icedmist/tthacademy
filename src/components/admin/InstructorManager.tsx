@@ -1,33 +1,26 @@
+
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import type { Instructor } from '@/lib/types';
-import { getInstructors } from '@/services/instructor-data';
 import { db } from '@/lib/firebase';
-import { collection, addDoc, updateDoc, deleteDoc, doc, getDoc, type DocumentData } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Pencil, Trash2, UserPlus, Twitter, Linkedin } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { InstructorForm } from './InstructorForm';
+import { InstructorForm, getInstructorFormSchema } from '@/components/admin/InstructorForm';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
 import { z } from 'zod';
 import { InstructorSchema } from '@/lib/types';
+import { getInstructors } from '@/services/instructor-data';
+import { uploadFile } from '@/services/storage';
 
-const NewInstructorSchema = InstructorSchema.omit({ id: true });
-type InstructorFormData = z.infer<typeof NewInstructorSchema>;
-
-const toInstructor = (doc: DocumentData): Instructor => {
-    const data = doc.data();
-    return InstructorSchema.parse({
-        id: doc.id,
-        ...data,
-    });
-};
+type InstructorFormData = z.infer<ReturnType<typeof getInstructorFormSchema>>;
 
 export function InstructorManager() {
   const [instructors, setInstructors] = useState<Instructor[]>([]);
@@ -37,42 +30,62 @@ export function InstructorManager() {
   const [editingInstructor, setEditingInstructor] = useState<Instructor | null>(null);
   const { toast } = useToast();
 
-  useEffect(() => {
-    const fetchInstructors = async () => {
-      setIsLoading(true);
-      try {
-        const data = await getInstructors();
-        setInstructors(data);
-      } catch (error) {
-        toast({
-          title: "Error",
-          description: "Could not fetch instructors.",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchInstructors();
+  const fetchInstructors = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const instructorList = await getInstructors();
+      setInstructors(instructorList);
+    } catch (error) {
+      console.error("Failed to fetch instructors", error);
+      toast({
+        title: "Error",
+        description: `Could not fetch team members: ${(error as Error).message}.`,
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }, [toast]);
+
+  useEffect(() => {
+    fetchInstructors();
+  }, [fetchInstructors]);
 
   const handleFormSubmit = async (data: InstructorFormData) => {
     setIsSubmitting(true);
     try {
-        const validatedData = NewInstructorSchema.parse(data);
+        let avatarUrl = data.avatarUrl;
+
+        // Check if a new file is being uploaded
+        if (data.avatarFile && data.avatarFile.length > 0) {
+            const file = data.avatarFile[0];
+            const filePath = `instructors/${Date.now()}_${file.name}`;
+            avatarUrl = await uploadFile(file, filePath);
+        } else if (!avatarUrl && editingInstructor) {
+            // Retain the existing URL if no new file is provided during an edit
+            avatarUrl = editingInstructor.avatarUrl;
+        }
+
+        if (!avatarUrl) {
+            throw new Error("Instructor image is required. Please upload an image or provide a URL.");
+        }
+
+        const NewInstructorSchema = InstructorSchema.omit({ id: true });
+        const validatedData = NewInstructorSchema.parse({
+            name: data.name,
+            bio: data.bio,
+            socials: data.socials,
+            avatarUrl: avatarUrl, // Use the potentially new URL
+        });
+        
         if (editingInstructor) {
             const instructorDocRef = doc(db, 'instructors', editingInstructor.id);
             await updateDoc(instructorDocRef, validatedData);
-            const updatedSnap = await getDoc(instructorDocRef);
-            const updatedInstructor = toInstructor(updatedSnap);
-            setInstructors(instructors.map(i => i.id === updatedInstructor.id ? updatedInstructor : i));
-
         } else {
-            const docRef = await addDoc(collection(db, 'instructors'), validatedData);
-            const newSnap = await getDoc(docRef);
-            const newInstructor = toInstructor(newSnap);
-            setInstructors(prevInstructors => [newInstructor, ...prevInstructors]);
+            await addDoc(collection(db, 'instructors'), validatedData);
         }
+
+        await fetchInstructors();
 
         toast({
             title: `Instructor ${editingInstructor ? 'updated' : 'added'}`,
@@ -91,6 +104,7 @@ export function InstructorManager() {
         setIsSubmitting(false);
     }
   };
+
 
   const openEditDialog = (instructor: Instructor) => {
     setEditingInstructor(instructor);
@@ -145,9 +159,12 @@ export function InstructorManager() {
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={onDialogClose}>
-        <DialogContent>
+        <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>{editingInstructor ? 'Edit Instructor' : 'Add New Instructor'}</DialogTitle>
+            <DialogDescription>
+                Provide the details for the instructor. This information will be publicly visible.
+            </DialogDescription>
           </DialogHeader>
           <InstructorForm 
             onSubmit={handleFormSubmit} 
@@ -207,7 +224,7 @@ export function InstructorManager() {
                               <Pencil className="h-4 w-4" />
                           </Button>
                       </TooltipTrigger>
-                      <TooltipContent><p>Edit instructor</p></TooltipContent>
+                      <TooltipContent><p>Edit member</p></TooltipContent>
                   </Tooltip>
                   <AlertDialog>
                     <Tooltip>
@@ -218,13 +235,13 @@ export function InstructorManager() {
                                 </Button>
                             </AlertDialogTrigger>
                         </TooltipTrigger>
-                        <TooltipContent><p>Delete instructor</p></TooltipContent>
+                        <TooltipContent><p>Delete member</p></TooltipContent>
                     </Tooltip>
                     <AlertDialogContent>
                         <AlertDialogHeader>
                             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                             <AlertDialogDescription>
-                                This action cannot be undone. This will permanently delete the instructor and remove their data from our servers.
+                                This action cannot be undone. This will permanently delete the instructor's data from our servers.
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>

@@ -26,6 +26,7 @@ export default function CertificatePage() {
     }
     
     async function fetchCourse() {
+      if (!params.id) return;
       const courseData = await getCourse(params.id);
       if (!courseData) {
         notFound();
@@ -121,3 +122,5 @@ export default function CertificatePage() {
     </motion.div>
   );
 }
+
+    

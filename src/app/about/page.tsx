@@ -1,13 +1,31 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Target, Lightbulb, Linkedin, Twitter, User } from 'lucide-react';
+import { Target, Lightbulb, Users } from 'lucide-react';
+import { getDocs, collection, query, orderBy } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import type { TeamMember } from '@/lib/types';
+import { TeamMemberSchema } from '@/lib/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import Link from 'next/link';
+import { Twitter, Linkedin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { getInstructors } from '@/services/instructor-data';
+import Link from 'next/link';
+
+async function getTeamMembers(): Promise<TeamMember[]> {
+  try {
+    const teamCollection = collection(db, 'team');
+    const q = query(teamCollection, orderBy('name', 'asc'));
+    const teamSnapshot = await getDocs(q);
+    const teamList = teamSnapshot.docs.map(d => TeamMemberSchema.parse({ id: d.id, ...d.data() }));
+    return teamList;
+  } catch (error) {
+    console.error("Failed to fetch team members for about page", error);
+    return [];
+  }
+}
 
 export default async function AboutUsPage() {
-  const instructors = await getInstructors();
+
+  const teamMembers = await getTeamMembers();
 
   return (
     <div className="container mx-auto py-12 px-4">
@@ -42,37 +60,47 @@ export default async function AboutUsPage() {
                     </p>
                 </div>
             </div>
-
-             <div className="text-center max-w-5xl mx-auto">
-                <h2 className="text-2xl font-headline font-semibold mb-8 text-primary">Meet the Instructors</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {instructors.map((instructor) => (
-                        <Card key={instructor.id} className="bg-card/80 p-6">
-                            <Avatar className="w-24 h-24 mx-auto mb-4 border-4 border-primary">
-                                <AvatarImage src={instructor.avatarUrl} alt={instructor.name} data-ai-hint="person" />
-                                <AvatarFallback><User className="h-10 w-10" /></AvatarFallback>
-                            </Avatar>
-                            <h3 className="text-xl font-headline font-bold">{instructor.name}</h3>
-                            <p className="text-muted-foreground mt-2 text-sm">{instructor.bio}</p>
-                            <div className="flex justify-center gap-4 mt-4">
-                               {instructor.socials?.twitter && (
-                                 <Link href={instructor.socials.twitter} target="_blank" aria-label={`${instructor.name}'s Twitter`}>
-                                     <Button variant="ghost" size="icon"><Twitter className="h-5 w-5"/></Button>
-                                 </Link>
-                               )}
-                               {instructor.socials?.linkedin && (
-                                   <Link href={instructor.socials.linkedin} target="_blank" aria-label={`${instructor.name}'s LinkedIn`}>
-                                     <Button variant="ghost" size="icon"><Linkedin className="h-5 w-5"/></Button>
-                                   </Link>
-                               )}
-                            </div>
-                        </Card>
-                    ))}
-                </div>
-            </div>
-
         </CardContent>
       </Card>
+
+      {teamMembers.length > 0 && (
+         <section id="team" className="w-full py-16 md:py-20">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl md:text-4xl font-headline font-bold text-center mb-12">
+              Meet the Team
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {teamMembers.map((member) => (
+                  <Card key={member.id} className="bg-card/60 backdrop-blur-sm border-border/50 h-full text-center">
+                    <CardHeader className="items-center pb-4">
+                        <Avatar className="w-24 h-24 mb-4 border-4 border-primary">
+                          <AvatarImage src={member.avatarUrl} alt={member.name} />
+                          <AvatarFallback><Users /></AvatarFallback>
+                        </Avatar>
+                        <CardTitle className="text-xl">{member.name}</CardTitle>
+                        <CardDescription className="text-primary font-medium">{member.role}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-muted-foreground text-sm">{member.bio}</p>
+                    </CardContent>
+                    <CardFooter className="justify-center gap-2">
+                        {member.socials?.twitter && (
+                           <Link href={member.socials.twitter} target="_blank">
+                             <Button variant="outline" size="icon"><Twitter className="w-4 h-4" /></Button>
+                           </Link>
+                        )}
+                         {member.socials?.linkedin && (
+                           <Link href={member.socials.linkedin} target="_blank">
+                             <Button variant="outline" size="icon"><Linkedin className="w-4 h-4" /></Button>
+                           </Link>
+                        )}
+                    </CardFooter>
+                  </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

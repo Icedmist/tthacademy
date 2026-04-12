@@ -59,7 +59,7 @@ export function SignUpForm({ referralCode }: { referralCode: string | null }) {
             });
 
             // Create the student progress document immediately
-            await getStudentProgress(user.uid, values.fullName, values.referralCode || undefined);
+            await getStudentProgress(user.uid, values.fullName, values.email, values.referralCode || undefined);
         }
         
         toast({

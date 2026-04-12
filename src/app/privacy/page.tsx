@@ -27,7 +27,7 @@ export default function PrivacyPolicyPage() {
                     </li>
                     <li><strong>Course Data:</strong> Progress tracking, assessment scores, and enrollment details.</li>
                     <li><strong>Usage Data:</strong> IP address, browser type, device information, and time spent on content, collected automatically.</li>
-                    <li><strong>Communication Data:</strong> Messages sent via the Tech Gee chatbot or support channels.</li>
+                    <li><strong>Communication Data:</strong> Messages sent via support channels.</li>
                     <li><strong>Payment Information:</strong> Transaction details if using payment gateways (e.g., Paystack, Stripe), processed securely by third-party providers.</li>
                 </ul>
             </div>

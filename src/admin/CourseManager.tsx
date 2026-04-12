@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Pencil, Trash2, Library, RefreshCw, Loader2, Sparkles, AlertTriangle, UploadCloud } from 'lucide-react';
+import { Pencil, Trash2, Library, RefreshCw, Loader2, Sparkles, UploadCloud } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { CourseForm } from '@/components/admin/CourseForm';
 import { Skeleton } from '@/components/ui/skeleton';

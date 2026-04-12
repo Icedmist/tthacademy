@@ -1,6 +1,7 @@
+
 'use client';
 
-import { BlogManager } from '../BlogManager';
+import { BlogManager } from '@/app/admin/BlogManager';
 import { Card, CardContent } from '@/components/ui/card';
 import { Newspaper } from 'lucide-react';
 

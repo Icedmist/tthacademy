@@ -2,41 +2,44 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import type { Instructor } from '@/lib/types';
+import type { TeamMember } from '@/lib/types';
 import { db } from '@/lib/firebase';
-import { collection, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Pencil, Trash2, UserPlus, Twitter, Linkedin } from 'lucide-react';
+import { Pencil, Trash2, Briefcase, Twitter, Linkedin } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { InstructorForm, getInstructorFormSchema } from '@/components/admin/InstructorForm';
+import { TeamMemberForm, getTeamMemberFormSchema } from '@/components/admin/TeamMemberForm';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
 import { z } from 'zod';
-import { InstructorSchema } from '@/lib/types';
-import { getInstructors } from '@/services/instructor-data';
+import { TeamMemberSchema } from '@/lib/types';
 import { uploadFile } from '@/services/storage';
+import { Badge } from '@/components/ui/badge';
 
-type InstructorFormData = z.infer<ReturnType<typeof getInstructorFormSchema>>;
+type TeamMemberFormData = z.infer<ReturnType<typeof getTeamMemberFormSchema>>;
 
-export function InstructorManager() {
-  const [instructors, setInstructors] = useState<Instructor[]>([]);
+export function TeamManager() {
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingInstructor, setEditingInstructor] = useState<Instructor | null>(null);
+  const [editingMember, setEditingMember] = useState<TeamMember | null>(null);
   const { toast } = useToast();
 
-  const fetchInstructors = useCallback(async () => {
+  const fetchTeamMembers = useCallback(async () => {
     setIsLoading(true);
     try {
-      const instructorList = await getInstructors();
-      setInstructors(instructorList);
+      const teamCollection = collection(db, 'team');
+      const q = query(teamCollection, orderBy('name', 'asc'));
+      const teamSnapshot = await getDocs(q);
+      const teamList = teamSnapshot.docs.map(d => TeamMemberSchema.parse({ id: d.id, ...d.data() }));
+      setTeamMembers(teamList);
     } catch (error) {
-      console.error("Failed to fetch instructors", error);
+      console.error("Failed to fetch team members", error);
       toast({
         title: "Error",
         description: `Could not fetch team members: ${(error as Error).message}.`,
@@ -48,52 +51,51 @@ export function InstructorManager() {
   }, [toast]);
 
   useEffect(() => {
-    fetchInstructors();
-  }, [fetchInstructors]);
+    fetchTeamMembers();
+  }, [fetchTeamMembers]);
 
-  const handleFormSubmit = async (data: InstructorFormData) => {
+  const handleFormSubmit = async (data: TeamMemberFormData) => {
     setIsSubmitting(true);
     try {
         let avatarUrl = data.avatarUrl;
 
-        // Check if a new file is being uploaded
         if (data.avatarFile && data.avatarFile.length > 0) {
             const file = data.avatarFile[0];
-            const filePath = `instructors/${Date.now()}_${file.name}`;
+            const filePath = `team/${Date.now()}_${file.name}`;
             avatarUrl = await uploadFile(file, filePath);
-        } else if (!avatarUrl && editingInstructor) {
-            // Retain the existing URL if no new file is provided during an edit
-            avatarUrl = editingInstructor.avatarUrl;
+        } else if (!avatarUrl && editingMember) {
+            avatarUrl = editingMember.avatarUrl;
         }
 
         if (!avatarUrl) {
-            throw new Error("Instructor image is required. Please upload an image or provide a URL.");
+            throw new Error("Team member image is required. Please upload an image or provide a URL.");
         }
 
-        const NewInstructorSchema = InstructorSchema.omit({ id: true });
-        const validatedData = NewInstructorSchema.parse({
+        const NewTeamMemberSchema = TeamMemberSchema.omit({ id: true });
+        const validatedData = NewTeamMemberSchema.parse({
             name: data.name,
+            role: data.role,
             bio: data.bio,
             socials: data.socials,
-            avatarUrl: avatarUrl, // Use the potentially new URL
+            avatarUrl: avatarUrl,
         });
         
-        if (editingInstructor) {
-            const instructorDocRef = doc(db, 'instructors', editingInstructor.id);
-            await updateDoc(instructorDocRef, validatedData);
+        if (editingMember) {
+            const memberDocRef = doc(db, 'team', editingMember.id);
+            await updateDoc(memberDocRef, validatedData);
         } else {
-            await addDoc(collection(db, 'instructors'), validatedData);
+            await addDoc(collection(db, 'team'), validatedData);
         }
 
-        await fetchInstructors();
+        await fetchTeamMembers();
 
         toast({
-            title: `Instructor ${editingInstructor ? 'updated' : 'added'}`,
-            description: `The instructor details have been saved successfully.`,
+            title: `Team Member ${editingMember ? 'updated' : 'added'}`,
+            description: `The details have been saved successfully.`,
             variant: "success",
         });
         setDialogOpen(false);
-        setEditingInstructor(null);
+        setEditingMember(null);
     } catch (error: any) {
         toast({
             title: "Error",
@@ -106,30 +108,30 @@ export function InstructorManager() {
   };
 
 
-  const openEditDialog = (instructor: Instructor) => {
-    setEditingInstructor(instructor);
+  const openEditDialog = (member: TeamMember) => {
+    setEditingMember(member);
     setDialogOpen(true);
   };
 
   const openAddDialog = () => {
-    setEditingInstructor(null);
+    setEditingMember(null);
     setDialogOpen(true);
   };
 
   const onDialogClose = () => {
     if (!isSubmitting) {
         setDialogOpen(false);
-        setEditingInstructor(null);
+        setEditingMember(null);
     }
   }
 
   const confirmDelete = async (id: string) => {
     try {
-        await deleteDoc(doc(db, 'instructors', id));
-        setInstructors(instructors.filter(i => i.id !== id));
+        await deleteDoc(doc(db, 'team', id));
+        setTeamMembers(teamMembers.filter(i => i.id !== id));
         toast({
-            title: "Instructor Deleted",
-            description: "The instructor has been removed successfully.",
+            title: "Team Member Deleted",
+            description: "The team member has been removed successfully.",
             variant: "success",
         });
     } catch (error: any) {
@@ -153,19 +155,22 @@ export function InstructorManager() {
     <TooltipProvider>
       <div className="flex justify-end mb-4">
         <Button onClick={openAddDialog}>
-          <UserPlus className="mr-2 h-4 w-4" />
-          Add Instructor
+          <Briefcase className="mr-2 h-4 w-4" />
+          Add Team Member
         </Button>
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={onDialogClose}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>{editingInstructor ? 'Edit Instructor' : 'Add New Instructor'}</DialogTitle>
+            <DialogTitle>{editingMember ? 'Edit Team Member' : 'Add New Team Member'}</DialogTitle>
+            <DialogDescription>
+                Provide the details for the team member. This information will be publicly visible.
+            </DialogDescription>
           </DialogHeader>
-          <InstructorForm 
+          <TeamMemberForm 
             onSubmit={handleFormSubmit} 
-            initialData={editingInstructor}
+            initialData={editingMember}
             isSubmitting={isSubmitting}
             onCancel={onDialogClose}
             />
@@ -176,22 +181,22 @@ export function InstructorManager() {
         <TableHeader>
             <TableRow>
                 <TableHead>Name</TableHead>
-                <TableHead>Bio</TableHead>
+                <TableHead>Role</TableHead>
                 <TableHead>Socials</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
             </TableRow>
         </TableHeader>
         <TableBody>
-            {instructors.length > 0 ? instructors.map((instructor) => (
-            <TableRow key={instructor.id}>
-                <TableCell className="font-medium">{instructor.name}</TableCell>
-                <TableCell className="text-muted-foreground max-w-sm">{instructor.bio}</TableCell>
+            {teamMembers.length > 0 ? teamMembers.map((member) => (
+            <TableRow key={member.id}>
+                <TableCell className="font-medium">{member.name}</TableCell>
+                <TableCell><Badge variant="secondary">{member.role}</Badge></TableCell>
                 <TableCell>
                 <div className='flex gap-2'>
-                    {instructor.socials?.twitter && (
+                    {member.socials?.twitter && (
                     <Tooltip>
                         <TooltipTrigger asChild>
-                        <Link href={instructor.socials.twitter} target="_blank">
+                        <Link href={member.socials.twitter} target="_blank">
                             <Button variant="outline" size="icon" className="h-8 w-8">
                             <Twitter className="h-4 w-4" />
                             </Button>
@@ -200,10 +205,10 @@ export function InstructorManager() {
                         <TooltipContent><p>View Twitter Profile</p></TooltipContent>
                     </Tooltip>
                     )}
-                    {instructor.socials?.linkedin && (
+                    {member.socials?.linkedin && (
                     <Tooltip>
                         <TooltipTrigger asChild>
-                        <Link href={instructor.socials.linkedin} target="_blank">
+                        <Link href={member.socials.linkedin} target="_blank">
                             <Button variant="outline" size="icon" className="h-8 w-8">
                             <Linkedin className="h-4 w-4" />
                             </Button>
@@ -217,7 +222,7 @@ export function InstructorManager() {
                 <TableCell className="text-right space-x-2">
                   <Tooltip>
                       <TooltipTrigger asChild>
-                          <Button variant="ghost" size="icon" onClick={() => openEditDialog(instructor)}>
+                          <Button variant="ghost" size="icon" onClick={() => openEditDialog(member)}>
                               <Pencil className="h-4 w-4" />
                           </Button>
                       </TooltipTrigger>
@@ -238,12 +243,12 @@ export function InstructorManager() {
                         <AlertDialogHeader>
                             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                             <AlertDialogDescription>
-                                This action cannot be undone. This will permanently delete the instructor's data from our servers.
+                                This action cannot be undone. This will permanently delete the team member's data from our servers.
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => confirmDelete(instructor.id)}>Continue</AlertDialogAction>
+                            <AlertDialogAction onClick={() => confirmDelete(member.id)}>Continue</AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
@@ -252,7 +257,7 @@ export function InstructorManager() {
             )) : (
               <TableRow>
                 <TableCell colSpan={4} className="text-center text-muted-foreground">
-                  No instructors found. Click "Add Instructor" to get started.
+                  No team members found. Click "Add Team Member" to get started.
                 </TableCell>
               </TableRow>
             )}

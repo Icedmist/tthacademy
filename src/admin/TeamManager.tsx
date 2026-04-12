@@ -7,7 +7,7 @@ import { db } from '@/lib/firebase';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Pencil, Trash2, Briefcase, Twitter, Linkedin } from 'lucide-react';
@@ -164,6 +164,9 @@ export function TeamManager() {
         <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>{editingMember ? 'Edit Team Member' : 'Add New Team Member'}</DialogTitle>
+            <DialogDescription>
+                Provide the details for the team member. This information will be publicly visible.
+            </DialogDescription>
           </DialogHeader>
           <TeamMemberForm 
             onSubmit={handleFormSubmit} 
@@ -263,3 +266,5 @@ export function TeamManager() {
     </TooltipProvider>
   );
 }
+
+    

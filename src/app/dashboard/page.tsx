@@ -25,7 +25,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-import { Trophy, BookOpen, LineChart, CheckCircle, Lightbulb, AlertTriangle, Cpu } from 'lucide-react';
+import { Trophy, BookOpen, LineChart, CheckCircle, Lightbulb, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
 import { COURSE_CATEGORY_COLORS } from '@/lib/constants';
@@ -33,7 +33,6 @@ import type { CourseCategory, Course } from '@/lib/types';
 import { CourseCard } from '@/components/courses/CourseCard';
 import { useAuth } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
-import { ADMIN_UIDS } from '@/lib/admin';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 
@@ -118,29 +117,43 @@ export default function DashboardPage() {
   const [isDataLoading, setIsDataLoading] = useState(true);
   const [isRecsLoading, setIsRecsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { user, isLoading: isAuthLoading } = useAuth();
+  const { user, profile, isLoading: isAuthLoading } = useAuth();
   const router = useRouter();
 
 
   useEffect(() => {
-    if (isAuthLoading) return; // Wait for auth to finish loading
+    if (isAuthLoading) return; 
     
     if (!user) {
       router.push('/login');
       return;
     }
+    
+    // Redirect based on role from the global profile
+    if (profile?.role === 'admin') {
+        router.push('/admin');
+        return;
+    }
 
-    const isAdmin = ADMIN_UIDS.includes(user.uid);
-    if (isAdmin) {
-      router.push('/admin');
+    // Wait for profile to load before proceeding
+    if (!profile) {
+      setIsDataLoading(true);
+      return;
+    }
+
+    // If profile is loaded but not a student, stop loading
+    if (profile.role !== 'student') {
+      setIsDataLoading(false);
       return;
     }
 
     async function fetchData() {
+      if (!user) return;
       try {
         setIsDataLoading(true);
         setError(null);
-        const progressData = await getStudentProgress(user.uid, user.displayName || user.email!);
+        // Fetch the full, detailed student progress data for the dashboard
+        const progressData = await getStudentProgress(user.uid, user.displayName ?? undefined, user.email ?? undefined, undefined, { includeCourseData: true });
         setData(progressData);
       } catch (error: any) {
         console.error('Failed to fetch student progress:', error);
@@ -163,9 +176,10 @@ export default function DashboardPage() {
         }
     }
     
+    // Profile is loaded and is a student, fetch data
     fetchData();
     fetchRecommendations();
-  }, [user, isAuthLoading, router]);
+  }, [user, profile, isAuthLoading, router]);
   
   if (isAuthLoading || isDataLoading || !data) {
     return <DashboardSkeleton />;

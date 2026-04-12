@@ -27,7 +27,7 @@ export default function TermsOfServicePage() {
                 <h3 className="text-xl font-semibold text-foreground mb-2">2. Description of Service</h3>
                  <ul className="list-disc list-inside pl-4 space-y-2 mt-2">
                     <li>Tech Trade Hub Academy provides online educational courses in Futures Trading, Web3, Crypto, Tech Skills, and AI & Machine Learning, accessible via a website and planned mobile application.</li>
-                    <li>The Service includes course content, progress tracking, assessments, certificates, and an AI chatbot (“Tech Gee”), supported by Firebase authentication.</li>
+                    <li>The Service includes course content, progress tracking, assessments, and certificates, supported by Firebase authentication.</li>
                 </ul>
             </div>
 
@@ -56,7 +56,7 @@ export default function TermsOfServicePage() {
             <div>
                 <h3 className="text-xl font-semibold text-foreground mb-2">5. Intellectual Property</h3>
                  <ul className="list-disc list-inside pl-4 space-y-2 mt-2">
-                    <li>All content, including courses, materials, and the Tech Gee chatbot, is owned by Tech Trade Hub Academy or its licensors.</li>
+                    <li>All content, including courses and materials, is owned by Tech Trade Hub Academy or its licensors.</li>
                     <li>You may not reproduce, distribute, or create derivative works without written consent, except for personal use within the Service.</li>
                     <li>Course completion certificates are for personal use and may not be altered or misrepresented.</li>
                 </ul>

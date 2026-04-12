@@ -50,10 +50,14 @@ export function LoginForm() {
     } catch (error: any) {
         let errorMessage = "An unknown error occurred.";
         switch (error.code) {
-            case 'auth/api-key-not-valid':
-                errorMessage = "The Firebase API key is not valid. Please check your .env file and ensure it matches the configuration for the 'tech-trade-hub-academy' project in your Firebase console.";
+            case 'auth/invalid-api-key':
+                errorMessage = "The Firebase API key is not valid. Please check your .env file and ensure it matches the configuration in your Firebase console.";
                 break;
             case 'auth/invalid-credential':
+                 errorMessage = "Incorrect email or password. Please check your credentials and try again.";
+                 break;
+            case 'auth/user-not-found':
+            case 'auth/wrong-password':
                  errorMessage = "Incorrect email or password. Please check your credentials and try again.";
                  break;
             default:

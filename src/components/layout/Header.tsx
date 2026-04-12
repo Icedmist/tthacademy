@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/Logo';
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
 import { Menu, LogOut, User, Shield } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import { auth } from '@/lib/firebase';
@@ -19,7 +19,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { ADMIN_UIDS } from '@/lib/admin';
 
 const navLinks = [
   { href: '/courses', label: 'Courses' },
@@ -30,7 +29,7 @@ const navLinks = [
 ];
 
 export const Header = () => {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -38,7 +37,7 @@ export const Header = () => {
     router.push('/');
   };
 
-  const isAuthorizedAdmin = user && ADMIN_UIDS.includes(user.uid);
+  const isAuthorizedAdmin = profile?.role === 'admin';
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -160,5 +159,3 @@ export const Header = () => {
     </header>
   );
 };
-
-    

@@ -90,7 +90,7 @@ export default function CoursePage() {
 
       if (user) {
         try {
-          const progressData = await getStudentProgress(user.uid);
+          const progressData = await getStudentProgress(user.uid, user.displayName ?? undefined, user.email ?? undefined);
           setStudentProgress(progressData);
         } catch (err) {
           console.error("Failed to fetch user progress", err);
@@ -122,11 +122,9 @@ export default function CoursePage() {
       const success = await handleEnroll(user.uid, course.id);
 
       if (success) {
-          const updatedProgress = await getStudentProgress(user.uid);
-          setStudentProgress(updatedProgress);
           toast({
               title: "Enrolled Successfully!",
-              description: `You can now start the "${course.title}" course.`,
+              description: `Redirecting you to the "${course.title}" course...`,
               variant: "success",
           });
           router.push(`/learn/${course.id}`);

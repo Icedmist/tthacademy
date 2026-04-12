@@ -4,9 +4,9 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Award, Bot, BarChart, Library, Newspaper, User, CalendarDays, ArrowRight, ShieldCheck, Zap, Users, Target, BookHeart, Briefcase, Sparkles } from 'lucide-react';
+import { Award, Bot, Library, Newspaper, User, CalendarDays, ArrowRight, ShieldCheck, Zap, Users, Target, BookHeart, Briefcase } from 'lucide-react';
 import Link from 'next/link';
-import type { Course, PlainBlog, PlainEvent, Instructor } from '@/lib/types';
+import type { Course, PlainBlog, PlainEvent, TeamMember } from '@/lib/types';
 import { CourseCard } from '@/components/courses/CourseCard';
 import { PostCard } from '@/components/blog/PostCard';
 import { EventCard } from '@/components/events/EventCard';
@@ -42,7 +42,7 @@ const testimonials = [
     }
 ];
 
-export default function HomePageClient({ courses, posts, events, instructors }: { courses: Course[], posts: PlainBlog[], events: PlainEvent[], instructors: Instructor[] }) {
+export default function HomePageClient({ courses, posts, events, teamMembers }: { courses: Course[], posts: PlainBlog[], events: PlainEvent[], teamMembers: TeamMember[] }) {
     return (
         <div className="flex flex-col items-center text-foreground">
         {/* Hero Section */}
@@ -209,9 +209,48 @@ export default function HomePageClient({ courses, posts, events, instructors }: 
             </div>
           </div>
         </section>
+        
+        {/* Meet the Team Section */}
+        <section id="team" className="w-full py-16 md:py-20 bg-background">
+          <div className="container mx-auto px-4">
+            <h2 className="text-2xl md:text-3xl font-headline font-bold text-center mb-12">
+              Meet the Team
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {teamMembers.map((member, index) => (
+                <motion.div
+                  key={member.id}
+                  variants={cardVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, amount: 0.5 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <Card className="bg-card/80 backdrop-blur-sm border-border/50 h-full text-center">
+                    <CardHeader className="items-center">
+                        <Avatar className="w-24 h-24 mb-4 border-4 border-primary">
+                          <AvatarImage src={member.avatarUrl} alt={member.name} />
+                          <AvatarFallback><User /></AvatarFallback>
+                        </Avatar>
+                        <CardTitle className="text-xl">{member.name}</CardTitle>
+                        <p className="text-sm text-primary">{member.role}</p>
+                    </CardHeader>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+             <div className="text-center mt-12">
+                <Link href="/about">
+                    <Button variant="outline">
+                        Learn More About Our Team <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                </Link>
+            </div>
+          </div>
+        </section>
 
         {/* Testimonials Section */}
-        <section id="testimonials" className="w-full py-16 md:py-20 bg-background">
+        <section id="testimonials" className="w-full py-16 md:py-20 bg-card/50">
             <div className="container mx-auto px-4">
                 <h2 className="text-2xl md:text-3xl font-headline font-bold text-center mb-4">What Our Students Say</h2>
                 <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-12">
@@ -254,7 +293,7 @@ export default function HomePageClient({ courses, posts, events, instructors }: 
         </section>
   
         {/* Dynamic Content Section */}
-        <section className="w-full py-16 md:py-20 bg-card/50">
+        <section className="w-full py-16 md:py-20 bg-background">
             <div className="container mx-auto px-4">
                  <div className="grid lg:grid-cols-2 gap-12">
                     {/* Upcoming Events */}
@@ -299,45 +338,6 @@ export default function HomePageClient({ courses, posts, events, instructors }: 
             </div>
         </section>
 
-        {/* Meet the Team Section */}
-        <section id="team" className="w-full py-16 md:py-20 bg-background">
-          <div className="container mx-auto px-4">
-            <h2 className="text-2xl md:text-3xl font-headline font-bold text-center mb-12">
-              Meet the Instructors
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-              {instructors.map((instructor, index) => (
-                <motion.div
-                  key={index}
-                  variants={cardVariants}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true, amount: 0.5 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                >
-                  <Card className="bg-card/50 h-full text-center">
-                    <CardHeader className="items-center p-4">
-                        <Avatar className="w-20 h-20 mb-4 border-4 border-primary">
-                          <AvatarImage src={instructor.avatarUrl} alt={instructor.name} data-ai-hint="person" />
-                          <AvatarFallback><User /></AvatarFallback>
-                        </Avatar>
-                        <CardTitle className="text-lg">{instructor.name}</CardTitle>
-                        <p className="text-sm text-primary">{instructor.bio.split('.')[0]}</p>
-                    </CardHeader>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-             <div className="text-center mt-12">
-                <Link href="/about">
-                    <Button variant="outline">
-                        Learn More About Our Team <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                </Link>
-            </div>
-          </div>
-        </section>
-  
         {/* Final CTA Section */}
         <section className="w-full text-center py-20 md:py-24 bg-card/50">
             <div className="container mx-auto px-4">
@@ -355,5 +355,3 @@ export default function HomePageClient({ courses, posts, events, instructors }: 
       </div>
     );
 }
-
-    

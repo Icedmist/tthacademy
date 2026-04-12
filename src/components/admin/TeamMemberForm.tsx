@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Loader2, User, Linkedin, Twitter, Image as ImageIcon, Briefcase } from 'lucide-react';
+import { Loader2, User, Linkedin, Twitter, Image as ImageIcon } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import type { TeamMember } from '@/lib/types';
 import { TeamMemberRoleSchema } from '@/lib/types';
@@ -16,14 +16,14 @@ import { TeamMemberRoleSchema } from '@/lib/types';
 const MAX_FILE_SIZE = 5000000; // 5MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
-export const getTeamMemberFormSchema = () => z.object({
+export const getTeamMemberFormSchema = (isEditing: boolean) => z.object({
   name: z.string().min(1, 'Name is required'),
   role: TeamMemberRoleSchema,
   bio: z.string().min(10, 'Bio must be at least 10 characters'),
   avatarUrl: z.string().url('Must be a valid URL for the avatar image').optional().or(z.literal('')),
   avatarFile: z
     .any()
-    .refine((files) => files?.length <= 1, "Only one image is allowed.")
+    .refine((files) => !files || files.length <= 1, "Only one image is allowed.")
     .refine((files) => !files?.[0] || files?.[0]?.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)
     .refine(
       (files) => !files?.[0] || ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
@@ -34,8 +34,8 @@ export const getTeamMemberFormSchema = () => z.object({
     linkedin: z.string().url().optional().or(z.literal('')),
   }).optional(),
 }).refine(data => {
-    if (data.avatarUrl) return true;
-    return data.avatarFile && data.avatarFile.length > 0;
+    // If an avatarUrl exists, or a file is provided, it's valid
+    return !!data.avatarUrl || (data.avatarFile && data.avatarFile.length > 0);
 }, {
     message: "An image is required. Please upload one or provide a URL.",
     path: ["avatarFile"],
@@ -51,8 +51,10 @@ interface TeamMemberFormProps {
 }
 
 export function TeamMemberForm({ onSubmit, initialData, isSubmitting, onCancel }: TeamMemberFormProps) {
+  const formSchema = getTeamMemberFormSchema(!!initialData);
+  
   const form = useForm<TeamMemberFormData>({
-    resolver: zodResolver(getTeamMemberFormSchema()),
+    resolver: zodResolver(formSchema),
     defaultValues: {
       name: initialData?.name ?? '',
       role: initialData?.role ?? 'Co-founder',
@@ -64,8 +66,6 @@ export function TeamMemberForm({ onSubmit, initialData, isSubmitting, onCancel }
       },
     },
   });
-
-  const fileRef = form.register("avatarFile");
 
   return (
     <Form {...form}>
@@ -140,7 +140,7 @@ export function TeamMemberForm({ onSubmit, initialData, isSubmitting, onCancel }
                 <FormItem>
                     <FormLabel>Or Upload Avatar</FormLabel>
                     <FormControl>
-                        <Input type="file" {...fileRef} />
+                        <Input type="file" onChange={(e) => field.onChange(e.target.files)} />
                     </FormControl>
                     <FormMessage />
                 </FormItem>

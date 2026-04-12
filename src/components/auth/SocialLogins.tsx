@@ -24,7 +24,7 @@ export function SocialLogins() {
       const user = result.user;
 
       // Ensure a student progress document is created on first social login
-      await getStudentProgress(user.uid, user.displayName || user.email || 'New User');
+      await getStudentProgress(user.uid, user.displayName || 'New User', user.email || undefined);
       
       toast({
         title: "Login Successful",

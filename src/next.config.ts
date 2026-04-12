@@ -3,9 +3,6 @@ import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
   /* config options here */
-  devIndicators: {
-    allowedDevOrigins: ["*.cloudworkstations.dev"],
-  },
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -17,6 +14,10 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'placehold.co',
+      },
+       {
+        protocol: 'https',
+        hostname: 'picsum.photos',
       },
       {
         protocol: 'https',
