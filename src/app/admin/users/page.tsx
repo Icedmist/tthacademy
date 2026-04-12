@@ -1,4 +1,3 @@
-
 'use client';
 
 import {
@@ -152,17 +151,10 @@ export default function AdminUsersPage() {
   }
 
 
-  return (
-    <TooltipProvider>
-       <div className="flex items-center gap-2 mb-4">
-        <Users className="h-8 w-8 text-primary" />
-        <h1 className="text-3xl md:text-4xl font-headline font-bold">
-          User Management
-        </h1>
-      </div>
-      <p className="text-muted-foreground mb-8">
-        View and manage all registered users with profiles in the system.
-      </p>
+    const updateRole = async (userId: string, newRole: string) => {
+        await updateDoc(doc(db, 'studentProgress', userId), { role: newRole });
+        setUsers(users.map(u => u.studentId === userId ? { ...u, role: newRole } : u));
+    };
 
       <Dialog open={!!editingUser} onOpenChange={(isOpen) => !isOpen && setEditingUser(null)}>
         <DialogContent>
