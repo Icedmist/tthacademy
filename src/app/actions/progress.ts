@@ -1,8 +1,6 @@
-'use server';
-
 import { updateLessonStatus } from "@/services/student-data";
 import { submitAssessment as submitSubService } from "@/services/assessment-data";
-import { revalidatePath } from "next/cache";
+import { safeRevalidatePath } from "@/lib/revalidate";
 import { AssessmentSubmission } from "@/lib/types";
 
 export async function handleUpdateLessonStatus(
@@ -15,9 +13,9 @@ export async function handleUpdateLessonStatus(
     try {
         await updateLessonStatus(userId, courseId, moduleIndex, lessonIndex, completed);
         // Revalidate paths to update UI across the app
-        revalidatePath(`/learn/${courseId}`);
-        revalidatePath(`/courses/${courseId}`);
-        revalidatePath('/dashboard');
+        await safeRevalidatePath(`/learn/${courseId}`);
+        await safeRevalidatePath(`/courses/${courseId}`);
+        await safeRevalidatePath('/dashboard');
         return { success: true };
     } catch (error) {
         console.error("Failed to update lesson status:", error);
@@ -30,8 +28,8 @@ export async function handleSubmitAssessment(
 ) {
     try {
         const submissionId = await submitSubService(submission);
-        revalidatePath(`/learn/${submission.courseId}`);
-        revalidatePath('/dashboard');
+        await safeRevalidatePath(`/learn/${submission.courseId}`);
+        await safeRevalidatePath('/dashboard');
         return { success: true, submissionId };
     } catch (error) {
         console.error("Failed to submit assessment:", error);
