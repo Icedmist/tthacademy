@@ -10,26 +10,44 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 
+import { useAuth } from '@/hooks/use-auth';
+import { getCourses } from '@/services/course-data';
+import type { Course } from '@/lib/types';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+
 export default function InstructorDashboard() {
+    const { user } = useAuth();
     const [stats, setStats] = useState({
         pendingReviews: 0,
         totalStudents: 0,
         completedCourses: 0,
         averageProgress: 0
     });
+    const [courses, setCourses] = useState<(Course & { studentCount: number })[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchStats = async () => {
+            if (!user) return;
             setIsLoading(true);
             try {
-                const [submissions, students] = await Promise.all([
+                const [submissions, students, allCourses] = await Promise.all([
                     getPendingSubmissions(),
-                    getAllStudentProgress()
+                    getAllStudentProgress(),
+                    getCourses()
                 ]);
 
-                const totalProgress = students.reduce((sum, s) => sum + s.overallProgress, 0);
-                const totalCompleted = students.reduce((sum, s) => sum + s.completedCourses, 0);
+                // Filter courses where this user is the instructor
+                const instructorCourses = allCourses.filter(c => c.instructor === user.displayName);
+                
+                const coursesWithCount = instructorCourses.map(course => {
+                    const studentCount = students.filter(s => s.enrolledCourses.some(ec => ec.id === course.id)).length;
+                    return { ...course, studentCount };
+                });
+                setCourses(coursesWithCount);
+
+                const totalProgress = students.reduce((sum, s) => sum + (s.overallProgress || 0), 0);
+                const totalCompleted = students.reduce((sum, s) => sum + (s.completedCourses || 0), 0);
 
                 setStats({
                     pendingReviews: submissions.length,
@@ -44,7 +62,7 @@ export default function InstructorDashboard() {
             }
         };
         fetchStats();
-    }, []);
+    }, [user]);
 
     return (
         <div className="space-y-8">
@@ -130,6 +148,41 @@ export default function InstructorDashboard() {
                     </CardContent>
                 </Card>
             </div>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>Your Courses</CardTitle>
+                    <CardDescription>An overview of the courses you are instructing.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Course Title</TableHead>
+                                <TableHead>Category</TableHead>
+                                <TableHead>Level</TableHead>
+                                <TableHead className="text-right">Enrolled Students</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {courses.length > 0 ? courses.map(course => (
+                                <TableRow key={course.id}>
+                                    <TableCell className="font-medium">{course.title}</TableCell>
+                                    <TableCell>{course.category}</TableCell>
+                                    <TableCell>{course.level}</TableCell>
+                                    <TableCell className="text-right font-semibold">{course.studentCount}</TableCell>
+                                </TableRow>
+                            )) : (
+                                <TableRow>
+                                    <TableCell colSpan={4} className="text-center h-24 text-muted-foreground">
+                                        No courses are currently assigned to you.
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
         </div>
     );
 }

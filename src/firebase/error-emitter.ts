@@ -21,6 +21,10 @@ class SimpleEventEmitter {
             this.listeners[event] = this.listeners[event].filter(cb => cb !== callback);
         }
     }
+
+    off(event: string, callback: Function) {
+        this.removeListener(event, callback);
+    }
 }
 
 // This is a simple event emitter that can be used to broadcast errors

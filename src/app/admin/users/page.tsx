@@ -45,6 +45,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/hooks/use-auth';
 import { updateUserRole } from '@/services/student-data';
 import { ADMIN_UIDS } from '@/lib/admin';
+import { CreateUserDialog } from '@/components/admin/CreateUserDialog';
 
 const ProgressBadge = ({ progress }: { progress: number }) => {
     let variant: "success" | "warning" | "destructive" | "secondary" = "secondary";
@@ -152,11 +153,14 @@ export default function AdminUsersPage() {
 
   return (
     <TooltipProvider>
-      <div className="flex items-center gap-2 mb-4">
-          <Users className="h-8 w-8 text-primary" />
-          <h1 className="text-3xl md:text-4xl font-headline font-bold">
-              User Management
-          </h1>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+          <div className="flex items-center gap-2">
+              <Users className="h-8 w-8 text-primary" />
+              <h1 className="text-3xl md:text-4xl font-headline font-bold">
+                  User Management
+              </h1>
+          </div>
+          <CreateUserDialog onUserCreated={fetchUsers} />
       </div>
       <p className="text-muted-foreground mb-8">
           Manage user roles and monitor student progress across the academy.

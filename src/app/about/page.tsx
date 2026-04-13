@@ -1,5 +1,5 @@
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Target, Lightbulb, Users } from 'lucide-react';
 import { getDocs, collection, query, orderBy } from 'firebase/firestore';
 import { db } from '@/lib/firebase';

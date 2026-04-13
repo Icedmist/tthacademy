@@ -13,12 +13,13 @@ import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/comp
 const navLinks = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
   { href: '/admin/users', label: 'Users', icon: Users },
+  { href: '/admin/instructors', label: 'Instructors', icon: UserCog },
+  { href: '/admin/review-assessments', label: 'Assessment Reviews', icon: BookCheck },
   { href: '/admin/courses', label: 'Courses', icon: Library },
   { href: '/admin/team', label: 'Team', icon: Briefcase },
-  { href: '/admin/instructors', label: 'Instructors', icon: UserCog },
   { href: '/admin/blog', label: 'Blog', icon: Newspaper },
   { href: '/admin/events', label: 'Events', icon: CalendarDays },
-  { href: '/admin/feedback', 'label': 'Feedback', icon: MessageSquare },
+  { href: '/admin/feedback', label: 'Feedback', icon: MessageSquare },
 ];
 
 function AdminSidebar() {
