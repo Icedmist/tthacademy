@@ -110,5 +110,20 @@ service cloud.firestore {
       allow create: if isSignedIn();
       allow read, update, delete: if isAdmin();
     }
+    // Assessment Submissions
+    match /assessmentSubmissions/{submissionId} {
+      allow read: if isAuthenticated() && (
+        isOwner(resource.data.userId) || 
+        isAdmin() || 
+        getRole() == 'instructor'
+      );
+      allow create: if isAuthenticated() && 
+                    isOwner(request.resource.data.userId) &&
+                    request.resource.data.status == 'pending';
+      allow update: if isAuthenticated() && (
+        isAdmin() || 
+        getRole() == 'instructor'
+      );
+    }
   }
 }

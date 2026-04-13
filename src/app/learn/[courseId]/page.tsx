@@ -6,8 +6,8 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
 import { getStudentProgress } from '@/services/student-data';
 import { getCourse as getCourseData, getCourses } from '@/services/course-data';
-import { handleUpdateLessonStatus as updateLessonStatusAction } from '@/app/actions/progress';
-import type { StudentProgress, Course, Module, Lesson } from '@/lib/types';
+import { handleUpdateLessonStatus as updateLessonStatusAction, handleSubmitAssessment } from '@/app/actions/progress';
+import type { StudentProgress, Course, Module, Lesson, AssessmentSubmission } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -31,6 +31,8 @@ function LearningInterface() {
     const [allCourses, setAllCourses] = useState<Course[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [assessmentAnswers, setAssessmentAnswers] = useState<Record<number, string>>({});
+    const [studentProfile, setStudentProfile] = useState<StudentProgress | null>(null);
 
     const isAssessment = searchParams.get('assessment') === 'final';
     const moduleIndex = parseInt(searchParams.get('module') || '0', 10);
@@ -56,6 +58,7 @@ function LearningInterface() {
 
                 setAllCourses(allCoursesData);
                 
+                setStudentProfile(progressData);
                 const courseWithProgress = progressData.enrolledCourses.find(c => c.id === params.courseId);
 
                 if (!courseWithProgress) {
@@ -137,6 +140,48 @@ function LearningInterface() {
         setIsSubmitting(false);
     };
 
+    const submitFinalAssessment = async () => {
+        if (!user || !enrolledCourse || !finalAssessment) return;
+        
+        const answersArray = finalAssessment.map((q, idx) => ({
+            questionText: q.questionText,
+            answerText: assessmentAnswers[idx] || ""
+        }));
+
+        if (answersArray.some(a => !a.answerText.trim())) {
+            toast({ title: "Incomplete", description: "Please answer all questions before submitting.", variant: 'destructive' });
+            return;
+        }
+
+        setIsSubmitting(true);
+        try {
+            const res = await handleSubmitAssessment({
+                userId: user.uid,
+                courseId: enrolledCourse.id,
+                answers: answersArray,
+            });
+
+            if (res.success) {
+                toast({ title: "Assessment Submitted", description: "Your answers have been forwarded to an instructor for review.", variant: 'success' });
+                // Update local status
+                if (studentProfile) {
+                    const updatedProfile = { ...studentProfile };
+                    updatedProfile.assessments = {
+                        ...(updatedProfile.assessments || {}),
+                        [enrolledCourse.id]: { status: 'pending' as const, submissionId: res.submissionId! }
+                    };
+                    setStudentProfile(updatedProfile);
+                }
+            } else {
+                throw new Error(res.error);
+            }
+        } catch (error) {
+            toast({ title: "Submission Failed", description: (error as Error).message, variant: 'destructive' });
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     if (isLoading || !enrolledCourse) {
         return <LearningSkeleton />;
     }
@@ -164,19 +209,60 @@ function LearningInterface() {
     const completedLessons = enrolledCourse.modules.reduce((sum, mod) => sum + mod.lessons.filter(l => l.completed).length, 0);
 
     const renderContent = () => {
+        const assessmentStatus = studentProfile?.assessments?.[params.courseId]?.status;
+
         if (isAssessment) {
             return (
                 <div className="prose dark:prose-invert max-w-none">
-                    <h2 className='font-headline'>Final Assessment</h2>
-                    <p>Please answer the following questions to the best of your ability. Your answers will be reviewed by an instructor.</p>
-                    <div className="space-y-8 mt-6">
-                        {finalAssessment?.map((q, idx) => (
-                            <div key={idx}>
-                                <Label htmlFor={`question-${idx}`} className="text-lg font-semibold">{`Question ${idx + 1}: ${q.questionText}`}</Label>
-                                <Textarea id={`question-${idx}`} rows={8} className="mt-2" placeholder="Your answer here..." />
-                            </div>
-                        ))}
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className='font-headline m-0'>Final Assessment</h2>
+                        {assessmentStatus && (
+                            <Badge className={cn(
+                                "capitalize text-sm py-1 px-3",
+                                assessmentStatus === 'pending' && "bg-yellow-500/10 text-yellow-500 border-yellow-500/20",
+                                assessmentStatus === 'approved' && "bg-green-500/10 text-green-500 border-green-500/20",
+                                assessmentStatus === 'rejected' && "bg-destructive/10 text-destructive border-destructive/20"
+                            )} variant="outline">
+                                {assessmentStatus}
+                            </Badge>
+                        )}
                     </div>
+                    
+                    {assessmentStatus === 'approved' ? (
+                        <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-6 text-center">
+                            <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
+                            <h3 className="text-xl font-bold text-green-500">Assessment Approved!</h3>
+                            <p className="mt-2">Congratulations! You have successfully completed this course. You can now download your certificate from the dashboard.</p>
+                        </div>
+                    ) : (
+                        <>
+                            <p>Please answer the following questions to the best of your ability. Your answers will be reviewed by an instructor.</p>
+                            <div className="space-y-8 mt-6">
+                                {finalAssessment?.map((q, idx) => (
+                                    <div key={idx}>
+                                        <Label htmlFor={`question-${idx}`} className="text-lg font-semibold">{`Question ${idx + 1}: ${q.questionText}`}</Label>
+                                        <Textarea 
+                                            id={`question-${idx}`} 
+                                            rows={8} 
+                                            className="mt-2" 
+                                            placeholder="Your answer here..." 
+                                            value={assessmentAnswers[idx] || ""}
+                                            onChange={(e) => setAssessmentAnswers(prev => ({ ...prev, [idx]: e.target.value }))}
+                                            disabled={assessmentStatus === 'pending' || assessmentStatus === 'approved'}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                            {assessmentStatus === 'rejected' && studentProfile?.assessments?.[params.courseId]?.lastFeedback && (
+                                <div className="mt-8 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+                                    <h4 className="font-bold flex items-center gap-2 mb-2">
+                                        <AlertTriangle className="h-4 w-4" /> Instructor Feedback
+                                    </h4>
+                                    <p className="text-sm">{studentProfile.assessments[params.courseId].lastFeedback}</p>
+                                </div>
+                            )}
+                        </>
+                    )}
                 </div>
             );
         } else {
@@ -195,10 +281,20 @@ function LearningInterface() {
     };
     
     const renderFooter = () => {
+        const assessmentStatus = studentProfile?.assessments?.[params.courseId]?.status;
+
         if (isAssessment) {
+            if (assessmentStatus === 'approved') return null;
+            
             return (
-                 <Button size="lg" className="w-full sm:w-auto" onClick={() => alert("Submission logic not yet implemented.")}>
-                    <BookCheck className="mr-2"/> Submit for Review
+                 <Button 
+                    size="lg" 
+                    className="w-full sm:w-auto" 
+                    onClick={submitFinalAssessment}
+                    disabled={isSubmitting || assessmentStatus === 'pending'}
+                >
+                    {isSubmitting ? <Loader2 className="mr-2 animate-spin"/> : <BookCheck className="mr-2"/>}
+                    {assessmentStatus === 'pending' ? 'Awaiting Instructor Review' : 'Submit for Review'}
                 </Button>
             );
         } else {

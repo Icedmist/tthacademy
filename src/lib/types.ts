@@ -7,9 +7,28 @@ export type CourseLevel = (typeof COURSE_LEVELS)[number];
 
 // Zod schema for a Quiz Question - now for subjective/essay questions
 export const QuestionSchema = z.object({
+  id: z.string().optional(),
   questionText: z.string().min(1, 'Question text cannot be empty'),
 });
 export type Question = z.infer<typeof QuestionSchema>;
+
+// Zod schema for Assessment Submission
+export const AssessmentSubmissionSchema = z.object({
+  id: z.string().optional(),
+  userId: z.string(),
+  courseId: z.string(),
+  answers: z.array(z.object({
+    questionText: z.string(),
+    answerText: z.string().min(1, 'Answer cannot be empty'),
+  })),
+  status: z.enum(['pending', 'approved', 'rejected']).default('pending'),
+  instructorId: z.string().optional(),
+  instructorName: z.string().optional(),
+  feedback: z.string().optional(),
+  submittedAt: z.any(), // Firestore Timestamp
+  updatedAt: z.any().optional(),
+});
+export type AssessmentSubmission = z.infer<typeof AssessmentSubmissionSchema>;
 
 // Zod schema for a Lesson
 export const LessonSchema = z.object({
@@ -65,6 +84,11 @@ export const StudentProgressSchema = z.object({
     completedCourses: z.number(),
     coursesInProgress: z.number(),
     referredBy: z.string().optional(),
+    assessments: z.record(z.string(), z.object({
+      status: z.enum(['pending', 'approved', 'rejected']),
+      submissionId: z.string(),
+      lastFeedback: z.string().optional(),
+    })).optional(),
 });
 export type StudentProgress = z.infer<typeof StudentProgressSchema>;
 

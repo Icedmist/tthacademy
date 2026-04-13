@@ -5,6 +5,7 @@ import { db } from '@/lib/firebase';
 import { doc, getDoc, setDoc, updateDoc, collection, getDocs, writeBatch } from "firebase/firestore"; 
 import type { StudentProgress, Course as CourseType, UserRole } from '@/lib/types';
 import { getCourse, getCourses } from './course-data';
+import { getInstructors } from './instructor-data';
 import { ADMIN_UIDS } from '@/lib/admin';
 import { errorEmitter } from '@/firebase/error-emitter';
 
@@ -44,10 +45,21 @@ export async function getStudentProgress(
 
     const docRef = doc(db, "studentProgress", userId);
     
-    // Determine role FIRST. An admin is an admin regardless of their profile doc.
-    const role: UserRole = ADMIN_UIDS.includes(userId) ? 'admin' : 'student';
-
     const docSnap = await getDoc(docRef);
+    
+    // Determine role. 
+    // 1. Admin if in hardcoded list
+    // 2. Instructor if email exists in instructors collection
+    // 3. Fallback to existing student record role or 'student'
+    let role: UserRole = 'student';
+    if (ADMIN_UIDS.includes(userId)) {
+        role = 'admin';
+    } else {
+        const instructorList = await getInstructors();
+        if (email && instructorList.some(i => i.email === email)) {
+            role = 'instructor';
+        }
+    }
 
     if (docSnap.exists()) {
         const studentData = docSnap.data();
@@ -79,10 +91,11 @@ export async function getStudentProgress(
             }).filter(c => c !== null) as CourseType[];
         }
         
-        const metrics = calculateProgressMetrics(enrolledCourses);
+        const assessments = studentData.assessments || {};
+        const metrics = calculateProgressMetrics(enrolledCourses, assessments);
         
-        // Ensure the role in the database is consistent with the hardcoded admin list
-        const finalRole = ADMIN_UIDS.includes(userId) ? 'admin' : (studentData.role || 'student');
+        // Ensure the role in the database is consistent with our resolution
+        const finalRole = role !== 'student' ? role : (studentData.role || 'student');
 
         if (finalRole !== studentData.role) {
             await updateDoc(docRef, { role: finalRole });
@@ -95,6 +108,7 @@ export async function getStudentProgress(
             role: finalRole,
             enrolledCourses: enrolledCourses,
             referredBy: studentData.referredBy,
+            assessments: assessments,
             ...metrics
         };
 
@@ -145,14 +159,28 @@ export async function getStudentProgress(
 /**
  * Recalculates progress metrics based on the current list of enrolled courses.
  * @param enrolledCourses Array of full CourseType objects with progress.
+ * @param assessments Optional record of course assessments and their statuses.
  * @returns An object with calculated progress metrics.
  */
-function calculateProgressMetrics(enrolledCourses: CourseType[]) {
+function calculateProgressMetrics(enrolledCourses: CourseType[], assessments: Record<string, any> = {}) {
     if (!enrolledCourses || enrolledCourses.length === 0) {
         return { coursesInProgress: 0, completedCourses: 0, overallProgress: 0 };
     }
+    
+    // A course is only completed if progress is 100% AND (it has no assessment OR the assessment is approved)
+    const completedCourses = enrolledCourses.filter(c => {
+        const progress = c.progress ?? 0;
+        const assessmentStatus = assessments[c.id]?.status;
+
+        // If the course has a final assessment, it MUST be approved to be "Completed"
+        if (c.finalAssessment && c.finalAssessment.length > 0) {
+            return progress === 100 && assessmentStatus === 'approved';
+        }
+        
+        return progress === 100;
+    }).length;
+
     const coursesInProgress = enrolledCourses.filter(c => (c.progress ?? 0) > 0 && (c.progress ?? 0) < 100).length;
-    const completedCourses = enrolledCourses.filter(c => c.progress === 100).length;
     const totalProgress = enrolledCourses.reduce((sum, course) => sum + (course.progress ?? 0), 0);
     const overallProgress = enrolledCourses.length > 0 ? Math.round(totalProgress / enrolledCourses.length) : 0;
 

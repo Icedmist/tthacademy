@@ -25,7 +25,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-import { Trophy, BookOpen, LineChart, CheckCircle, Lightbulb, AlertTriangle } from 'lucide-react';
+import { Trophy, BookOpen, LineChart, CheckCircle, Lightbulb, AlertTriangle, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
 import { COURSE_CATEGORY_COLORS } from '@/lib/constants';
@@ -34,6 +34,7 @@ import { CourseCard } from '@/components/courses/CourseCard';
 import { useAuth } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
 
 
 const cardVariants = {
@@ -243,13 +244,34 @@ export default function DashboardPage() {
       >
         Welcome back, {user?.displayName || data.name}!
       </motion.h1>
-      <motion.p
-        variants={cardVariants}
-        custom={1}
-        className="text-muted-foreground mb-10"
-      >
-        Let's continue your journey to mastering the future.
       </motion.p>
+
+      {/* Assessment Notifications */}
+      {Object.entries(data.assessments || {}).some(([_, status]) => status.status !== 'pending') && (
+        <motion.div variants={cardVariants} custom={2} className="mb-8">
+            <Card className="bg-primary/5 border-primary/20">
+                <CardHeader className="py-4">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                        <AlertTriangle className="h-4 w-4 text-primary" />
+                        Instructor Feedback
+                    </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                    {Object.entries(data.assessments || {}).filter(([_, s]) => s.lastFeedback).map(([courseId, status]) => (
+                        <div key={courseId} className="bg-background/50 p-3 rounded-lg border text-sm">
+                            <div className="flex justify-between mb-1">
+                                <span className="font-bold">Course Ref: {courseId}</span>
+                                <Badge variant={status.status === 'approved' ? 'success' : 'destructive'} className="text-[10px] uppercase h-5">
+                                    {status.status}
+                                </Badge>
+                            </div>
+                            <p className="text-muted-foreground italic">"{status.lastFeedback}"</p>
+                        </div>
+                    ))}
+                </CardContent>
+            </Card>
+        </motion.div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         {stats.map((stat, i) => (

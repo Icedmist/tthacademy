@@ -10,34 +10,69 @@ import { useAuth } from '@/hooks/use-auth';
 import { useEffect, useState } from 'react';
 import QRCode from "react-qr-code";
 import { getCourse } from '@/services/course-data';
-import type { Course } from '@/lib/types';
+import { getStudentProgress } from '@/services/student-data';
+import type { Course, StudentProgress } from '@/lib/types';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { AlertTriangle } from 'lucide-react';
+import Link from 'next/link';
 
 export default function CertificatePage() {
   const params = useParams<{ id: string }>();
   const [course, setCourse] = useState<Course | null>(null);
+  const [profile, setProfile] = useState<StudentProgress | null>(null);
   const { user } = useAuth();
   const router = useRouter();
   const [url, setUrl] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [isEligible, setIsEligible] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       setUrl(window.location.href);
     }
     
-    async function fetchCourse() {
-      if (!params.id) return;
-      const courseData = await getCourse(params.id);
-      if (!courseData) {
-        notFound();
-      } else {
+    async function checkEligibility() {
+      if (!params.id || !user) return;
+      
+      try {
+        const [courseData, progressData] = await Promise.all([
+            getCourse(params.id),
+            getStudentProgress(user.uid)
+        ]);
+
+        if (!courseData) {
+            notFound();
+            return;
+        }
+
         setCourse(courseData);
+        setProfile(progressData);
+
+        const courseProgress = progressData.enrolledCourses.find(c => c.id === params.id);
+        const assessmentStatus = progressData.assessments?.[params.id]?.status;
+
+        // Eligibility: 100% progress AND assessment approved (if it exists)
+        const hasAssessment = courseData.finalAssessment && courseData.finalAssessment.length > 0;
+        const isComplete = (courseProgress?.progress ?? 0) === 100;
+        
+        if (isComplete && (!hasAssessment || assessmentStatus === 'approved')) {
+            setIsEligible(true);
+        } else {
+            setIsEligible(false);
+        }
+      } catch (err) {
+          console.error("Eligibility check failed:", err);
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     }
     
-    fetchCourse();
-  }, [params.id]);
+    if (user) {
+        checkEligibility();
+    } else if (!isLoading) {
+        setIsLoading(false);
+    }
+  }, [params.id, user, isLoading]);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -45,13 +80,41 @@ export default function CertificatePage() {
     }
   }, [user, isLoading, router]);
 
-  if (isLoading || !course) {
+  if (isLoading) {
     return <div className="h-screen w-screen flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin" /></div>;
   }
 
-  const studentName = user?.displayName || user?.email || "Student";
+  if (!isEligible || !course) {
+    return (
+        <div className="h-screen w-screen flex items-center justify-center p-4">
+             <Card className="max-w-md w-full border-yellow-500/50 bg-yellow-500/5">
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-yellow-600">
+                        <AlertTriangle />
+                        Not Yet Eligible
+                    </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <p className="text-sm text-yellow-700">
+                        To access your certificate, you must complete all course lessons and receive instructor approval for your final assessment.
+                    </p>
+                    <div className="flex gap-2">
+                         <Link href={`/learn/${params.id}?assessment=final`} className="flex-1">
+                            <Button className="w-full">Check Assessment Status</Button>
+                        </Link>
+                        <Link href="/dashboard" className="flex-1">
+                            <Button variant="outline" className="w-full">Back to Dashboard</Button>
+                        </Link>
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+    );
+  }
+
+  const studentName = profile?.name || user?.displayName || user?.email || "Student";
   const completionDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-  const finalScore = 98; // Placeholder
+  const finalScore = 100; // Success is binary in this subjective model
 
   return (
     <motion.div 
