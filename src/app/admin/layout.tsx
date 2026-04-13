@@ -5,7 +5,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ShieldAlert, Loader2, Users, Library, Newspaper, CalendarDays, MessageSquare, Shield, Home, LayoutDashboard, Briefcase, UserCog } from 'lucide-react';
+import { ShieldAlert, Loader2, Users, Library, Newspaper, CalendarDays, MessageSquare, Shield, Home, LayoutDashboard, Briefcase, UserCog, BookCheck } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';

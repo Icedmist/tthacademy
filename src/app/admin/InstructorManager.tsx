@@ -39,7 +39,7 @@ export function InstructorManager() {
       console.error("Failed to fetch instructors", error);
       toast({
         title: "Error",
-        description: `Could not fetch team members: ${(error as Error).message}.`,
+        description: `Could not fetch instructors: ${(error as Error).message}.`,
         variant: "destructive",
       });
     } finally {

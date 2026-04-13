@@ -2,7 +2,7 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, Library, Newspaper, CalendarDays, MessageSquare, Briefcase } from 'lucide-react';
+import { Users, Library, Newspaper, CalendarDays, MessageSquare, Briefcase, BookCheck } from 'lucide-react';
 import Link from 'next/link';
 
 const adminSections = [
@@ -12,6 +12,7 @@ const adminSections = [
     { href: '/admin/blog', label: 'Blog Management', icon: Newspaper, description: 'Create and publish blog posts.' },
     { href: '/admin/events', label: 'Event Management', icon: CalendarDays, description: 'Schedule and manage academy events.' },
     { href: '/admin/feedback', label: 'View Feedback', icon: MessageSquare, description: 'Review submissions from the feedback form.' },
+    { href: '/admin/review-assessments', label: 'Assessment Reviews', icon: BookCheck, description: 'Review and grade student final assessments.' },
 ];
 
 export default function AdminDashboardPage() {

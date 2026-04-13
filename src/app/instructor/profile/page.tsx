@@ -53,7 +53,7 @@ export default function InstructorProfilePage() {
 
         async function fetchInstructorData() {
             const instructors = await getInstructors();
-            const currentInstructor = instructors.find(inst => inst.id === user.uid);
+            const currentInstructor = instructors.find(inst => inst.id === user?.uid);
             if (currentInstructor) {
                 setInstructorData(currentInstructor);
                 form.reset({
@@ -61,13 +61,13 @@ export default function InstructorProfilePage() {
                     bio: currentInstructor.bio,
                     avatarUrl: currentInstructor.avatarUrl,
                     socials: {
-                        twitter: currentInstructor.socials?.twitter || '',
-                        linkedin: currentInstructor.socials?.linkedin || '',
+                        twitter: (currentInstructor as any).socials?.twitter || '',
+                        linkedin: (currentInstructor as any).socials?.linkedin || '',
                     }
                 });
             } else {
                  form.reset({
-                    name: user.displayName || '',
+                    name: user?.displayName || '',
                     bio: '',
                     avatarUrl: '',
                     socials: { twitter: '', linkedin: ''}

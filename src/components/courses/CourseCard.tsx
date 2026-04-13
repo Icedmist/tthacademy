@@ -16,14 +16,14 @@ interface CourseCardProps {
 }
 
 export function CourseCard({ course }: CourseCardProps) {
-    const categoryColor = COURSE_CATEGORY_COLORS[course.category];
+    const categoryColor = COURSE_CATEGORY_COLORS[course.category as keyof typeof COURSE_CATEGORY_COLORS];
     const cardVariants = {
         hidden: { opacity: 0, y: 20 },
         visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
     };
 
     const getLink = () => {
-        if (course.progress > 0 && course.progress < 100) {
+        if (course.progress !== undefined && course.progress > 0 && course.progress < 100) {
             // Find first incomplete lesson to continue
             for (let mIdx = 0; mIdx < course.modules.length; mIdx++) {
                 for (let lIdx = 0; lIdx < course.modules[mIdx].lessons.length; lIdx++) {
@@ -49,7 +49,7 @@ export function CourseCard({ course }: CourseCardProps) {
         >
             <Card 
                 className="flex flex-col h-full overflow-hidden transition-all hover:shadow-lg hover:shadow-primary/10 bg-card/60 backdrop-blur-sm border-border/50"
-                style={{ '--category-color': categoryColor, borderBottom: `2px solid var(--category-color)` }}
+                style={{ '--category-color': categoryColor, borderBottom: `2px solid var(--category-color)` } as React.CSSProperties}
             >
             <CardHeader className="p-4">
                 <div className="flex justify-between items-start gap-2 mb-2">
@@ -68,7 +68,7 @@ export function CourseCard({ course }: CourseCardProps) {
                 <p className="text-muted-foreground text-sm leading-relaxed mb-2 h-24 line-clamp-5">{course.description}</p>
             </CardContent>
             <CardFooter className="p-4 pt-0 mt-auto">
-                 {course.progress > 0 && (
+                 {course.progress !== undefined && course.progress > 0 && (
                 <div className="w-full mb-3">
                     <div className="flex justify-between items-center mb-1">
                         <span className="text-xs font-medium text-muted-foreground">Progress</span>
@@ -83,7 +83,7 @@ export function CourseCard({ course }: CourseCardProps) {
                     </div>
                     <Link href={getLink()}>
                         <Button size="sm" className="text-xs h-8">
-                            {course.progress > 0 && course.progress < 100 ? 'Continue' : 'View Details'}
+                            {course.progress !== undefined && course.progress > 0 && course.progress < 100 ? 'Continue' : 'View Details'}
                         </Button>
                     </Link>
                 </div>

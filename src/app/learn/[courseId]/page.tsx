@@ -13,13 +13,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, ArrowRight, CheckCircle, Circle, Home, Loader2, AlertTriangle, BookCheck } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle, Circle, Home, Loader2, AlertTriangle, BookCheck, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { VideoPlayer } from '@/components/courses/VideoPlayer';
 
 function LearningInterface() {
     const { user } = useAuth();
@@ -247,9 +248,9 @@ function LearningInterface() {
                                             rows={8} 
                                             className="mt-2" 
                                             placeholder="Your answer here..." 
-                                            value={assessmentAnswers[idx] || ""}
+                                            value={assessmentAnswers[idx] ?? ""}
                                             onChange={(e) => setAssessmentAnswers(prev => ({ ...prev, [idx]: e.target.value }))}
-                                            disabled={assessmentStatus === 'pending' || assessmentStatus === 'approved'}
+                                            disabled={assessmentStatus === 'pending' || (assessmentStatus as string) === 'approved'}
                                         />
                                     </div>
                                 ))}
@@ -269,12 +270,42 @@ function LearningInterface() {
         } else {
             return (
                 <>
-                    <div className="aspect-video bg-muted rounded-lg flex items-center justify-center mb-8">
-                        <p className="text-muted-foreground">Lesson video placeholder for "{currentLesson?.title}"</p>
+                    <div className="mb-8">
+                        {currentLesson?.videoUrl ? (
+                            <VideoPlayer videoUrl={currentLesson.videoUrl} title={currentLesson.title} />
+                        ) : (
+                            <div className="aspect-video bg-muted rounded-lg flex items-center justify-center border-dashed border-2 border-muted-foreground/20">
+                                <p className="text-muted-foreground italic">No video available for this lesson.</p>
+                            </div>
+                        )}
                     </div>
                     <div className="prose dark:prose-invert max-w-none">
-                        <h2 className='font-headline'>About This Lesson</h2>
-                        <p>{currentLesson?.content}</p>
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                            <h2 className='font-headline m-0'>About This Lesson</h2>
+                            {currentLesson?.duration && (
+                                <Badge variant="secondary" className="w-fit">{currentLesson.duration}</Badge>
+                            )}
+                        </div>
+                        <div className="bg-card/30 p-6 rounded-xl border border-border/40 mb-8 whitespace-pre-wrap leading-relaxed shadow-inner">
+                            {currentLesson?.content}
+                        </div>
+
+                        {currentLesson?.assignment && (
+                            <div className="mt-12 bg-primary/5 border border-primary/20 rounded-2xl p-6 sm:p-8 relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                    <BookCheck className="h-24 w-24 text-primary" />
+                                </div>
+                                <h3 className="text-xl font-headline font-bold text-primary flex items-center gap-2 mb-4">
+                                    <Sparkles className="h-5 w-5" /> Assignment
+                                </h3>
+                                <div className="text-foreground/90 leading-relaxed font-medium">
+                                    {currentLesson.assignment}
+                                </div>
+                                <p className="mt-6 text-sm text-muted-foreground italic border-t pt-4 border-primary/10">
+                                    Note: Assignments are for self-practice and to prepare you for the final assessment.
+                                </p>
+                            </div>
+                        )}
                     </div>
                 </>
             );
