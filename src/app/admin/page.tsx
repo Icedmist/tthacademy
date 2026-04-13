@@ -3,10 +3,12 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, Library, Newspaper, CalendarDays, MessageSquare, Briefcase, BookCheck, ShieldCheck, Mail, Fingerprint } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/use-auth';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { Database, ArrowRight } from 'lucide-react';
 
 const adminSections = [
     { href: '/admin/users', label: 'User Management', icon: Users, description: 'View and manage all registered users.' },
@@ -63,12 +65,27 @@ export default function AdminDashboardPage() {
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="bg-muted/30 border-dashed">
+                <Card className="relative overflow-hidden border-primary bg-primary/10">
+                    <div className="absolute top-0 right-0 p-4 opacity-10">
+                        <Database className="h-24 w-24" />
+                    </div>
                     <CardHeader>
-                        <CardTitle className="text-sm">Troubleshooting</CardTitle>
+                        <CardTitle className="text-sm flex items-center gap-2">
+                             <Database className="h-4 w-4 text-primary" />
+                             Curriculum Sync
+                        </CardTitle>
                     </CardHeader>
-                    <CardContent className="text-xs text-muted-foreground">
-                        If "System Role" is <strong>student</strong>, you will not see assessments. Contact the lead admin to add your email to the instructors collection.
+                    <CardContent>
+                        <p className="text-sm font-semibold mb-2">50 Courses Enriched</p>
+                        <p className="text-xs text-muted-foreground mb-4">
+                            New high-quality content ready for deployment.
+                        </p>
+                        <Link href="/admin/courses">
+                            <Button size="sm" className="w-full bg-primary hover:bg-primary/90">
+                                Go to Database Setup
+                                <ArrowRight className="ml-2 h-4 w-4" />
+                            </Button>
+                        </Link>
                     </CardContent>
                 </Card>
             </div>
