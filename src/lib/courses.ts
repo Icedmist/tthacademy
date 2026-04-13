@@ -76,131 +76,390 @@ export const courses: Omit<Course, 'progress'>[] = [
     id: 'futures-b-02',
     title: 'Futures Markets Overview',
     description: 'Explore the different types of futures markets available to trade.',
-    longDescription: 'Gain a broad understanding of the various futures markets, including commodities, financials, and equity indices. Learn what makes each market unique.',
+    longDescription: 'Gain a broad understanding of the various futures markets, including commodities, financials, and equity indices. Learn what makes each market unique and how to choose which ones to focus on.',
     category: 'Futures Trading',
     level: 'Beginner',
     duration: '4h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/futures-b-02/600/400',
-    modules: [{ title: 'Market Types', lessons: [{ title: 'Commodities vs. Financials', content: 'Explore the differences between commodity (e.g., oil, corn) and financial (e.g., S&P 500, bonds) futures. We discuss their respective participants, volatility factors, and economic significance.', duration: '1h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What are the main economic drivers of a commodity futures market like crude oil, and how do they differ from the drivers of an equity index future like the E-mini S&P 500?' }]
+    modules: [
+      {
+        title: 'Physical Commodities',
+        lessons: [
+          { 
+            title: 'Energy and Metals', 
+            content: 'Dive into the highly volatile world of crude oil, natural gas, gold, and silver futures. Understand how global supply chains and geopolitical events drive these prices.', 
+            duration: '1h', 
+            videoUrl: 'https://www.youtube.com/watch?v=5VjIdqGk1Z8',
+            assignment: 'Identify two geopolitical events in the last 12 months that caused a spike in crude oil prices.',
+            completed: false 
+          },
+          { 
+            title: 'Agricultural Futures', 
+            content: 'Learn about the "softs" and "grains" - from coffee and sugar to corn and wheat. Discover how weather patterns and harvest cycles affect your trades.', 
+            duration: '1h', 
+            videoUrl: 'https://www.youtube.com/watch?v=R9pDuxo4d90',
+            assignment: 'What is a "WASDE" report and why do agricultural traders watch it so closely?',
+            completed: false 
+          }
+        ]
+      },
+      {
+        title: 'Financial Futures',
+        lessons: [
+          { 
+            title: 'Equity Indices and Interest Rates', 
+            content: 'Understand the E-mini S&P 500, Nasdaq 100, and Treasury Bond futures. Learn how these instruments react to interest rate changes and corporate earnings.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=q6eS8C2E7vM',
+            assignment: 'Explain why a rise in interest rates typically causes Treasury Bond prices to fall.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'Compare physical commodity futures with financial index futures. What are the key differences in how they are settled at expiration?' }]
   },
   {
     id: 'futures-b-03',
     title: 'Basic Futures Trading Strategies',
     description: 'Learn simple, effective strategies for entering and exiting trades.',
-    longDescription: 'This course introduces foundational trading strategies that you can apply immediately. Learn about trend-following, range trading, and breakout strategies.',
+    longDescription: 'This course introduces foundational trading strategies that you can apply immediately. Learn about trend-following, range trading, and breakout strategies for different market environments.',
     category: 'Futures Trading',
     level: 'Beginner',
     duration: '6h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/futures-b-03/600/400',
-    modules: [{ title: 'Core Strategies', lessons: [{ title: 'Trend Following', content: 'Learn how to identify the direction of the market trend using moving averages and other indicators, and how to place trades that align with that trend for higher probability outcomes.', duration: '1.5h', completed: false }] }],
-    finalAssessment: [{ questionText: 'Describe a simple trend-following strategy using a 50-period moving average. What are the entry and exit rules?' }]
+    modules: [
+      {
+        title: 'Strategic Foundations',
+        lessons: [
+          { 
+            title: 'Trend Following Basics', 
+            content: 'Trend following is the cornerstone of many successful trading systems. Learn how to identify a trend and use moving averages to confirm direction.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=I0vI_v8EayA',
+            assignment: 'Open a 1-hour chart of any future and identify three clear uptrends and three clear downtrends.',
+            completed: false 
+          },
+          { 
+            title: 'Support and Resistance Trading', 
+            content: 'Learn how to find "walls" in the market where price is likely to bounce. We cover horizontal levels and dynamic support using trendlines.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=w6-qU9v9e9E',
+            assignment: 'Draw three horizontal support/resistance lines on a daily chart and explain why you chose those specific levels.',
+            completed: false 
+          }
+        ]
+      },
+      {
+        title: 'Breakout Strategies',
+        lessons: [
+          { 
+            title: 'Identifying High-Probability Breakouts', 
+            content: 'Trading breakouts can be highly profitable but also risky due to "fakeouts". Learn how to use volume to confirm a breakout.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=5P2sBf6Daqc',
+            assignment: 'Define a "false breakout" and describe one way to filter it out using an additional indicator.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'Describe the three core components of a trading strategy: Entry, Exit, and Risk Management, using the Trend Following approach as an example.' }]
   },
   {
     id: 'futures-b-04',
     title: 'Technical Analysis for Futures',
     description: 'Understand how to read charts and use indicators to make trading decisions.',
-    longDescription: 'Technical analysis is a cornerstone of trading. This course covers chart patterns, support and resistance, moving averages, and other key indicators.',
+    longDescription: 'Technical analysis is a cornerstone of futures trading. This course covers chart patterns, support and resistance, moving averages, and other key indicators that help you time your entries and exits.',
     category: 'Futures Trading',
     level: 'Beginner',
     duration: '7h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/futures-b-04/600/400',
-    modules: [{ title: 'Chart Reading', lessons: [{ title: 'Support and Resistance', content: 'Learn to identify key price levels where buying or selling pressure is expected to be strong. This forms the basis for many trading decisions and risk management techniques.', duration: '2h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What is a support level, how is it identified on a chart, and how might a trader use it to make a trading decision?' }]
+    modules: [
+      {
+        title: 'Charting Foundations',
+        lessons: [
+          { 
+            title: 'Candlestick Anatomy', 
+            content: 'Learn how to read price action through Japanese candlesticks. We cover open, high, low, and close values and what they tell us about market sentiment.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=5VjIdqGk1Z8',
+            assignment: 'Identify a "Doji" and a "Hammer" candle on a recent daily gold chart.',
+            completed: false 
+          },
+          { 
+            title: 'Moving Averages', 
+            content: 'Moving averages smooth out price data to identify the trend. Learn the difference between Simple (SMA) and Exponential (EMA) moving averages.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=R9pDuxo4d90',
+            assignment: 'Plot a 200-period EMA on a Nasdaq chart and describe what happens when price touches it.',
+            completed: false 
+          }
+        ]
+      },
+      {
+        title: 'Indicators and Oscillators',
+        lessons: [
+          { 
+            title: 'RSI and Overbought/Oversold', 
+            content: 'The Relative Strength Index (RSI) helps identify potential reversal points. Learn how to use it to spot momentum divergence.', 
+            duration: '3h', 
+            videoUrl: 'https://www.youtube.com/watch?v=I0vI_v8EayA',
+            assignment: 'Find a recent example where RSI divergence predicted a trend change in the Crude Oil market.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'Explain how the combination of a moving average and a candlestick pattern (like a hammer) can create a high-probability trading signal.' }]
   },
   {
     id: 'futures-b-05',
     title: 'Fundamental Analysis in Futures',
     description: 'Learn how economic data and news events impact futures prices.',
-    longDescription: 'Go beyond the charts to understand the real-world factors that drive markets. This course covers supply and demand, economic reports, and geopolitical events.',
+    longDescription: 'Go beyond the charts to understand the real-world factors that drive markets. This course covers supply and demand, economic reports, and geopolitical events that move millions.',
     category: 'Futures Trading',
     level: 'Beginner',
     duration: '5h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/futures-b-05/600/400',
-    modules: [{ title: 'Market Drivers', lessons: [{ title: 'Supply and Demand', content: 'Understand the primary driver of all markets. This lesson covers how to analyze reports on production, inventory, and consumption for commodities.', duration: '1h', completed: false }] }],
-    finalAssessment: [{ questionText: 'How might a government report showing higher-than-expected crop yields affect a corn futures contract? Explain your reasoning.' }]
+    modules: [
+      {
+        title: 'Economic Drivers',
+        lessons: [
+          { 
+            title: 'Interest Rates and the Fed', 
+            content: 'Interest rates are the lifeblood of the financial markets. Learn how the Federal Reserve\'s decisions impact equity indices and bond futures.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=q6eS8C2E7vM',
+            assignment: 'Research the most recent FOMC meeting results and summarize how the market reacted.',
+            completed: false 
+          },
+          { 
+            title: 'Inventory and Supply Reports', 
+            content: 'For commodity traders, reports like the EIA Petroleum Status Report or the USDA WASDE are critical. Learn how to interpret these "shocks".', 
+            duration: '3h', 
+            videoUrl: 'https://www.youtube.com/watch?v=w6-qU9v9e9E',
+            assignment: 'Look up the next release date for the EIA Weekly Petroleum Status Report.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'Explain the concept of "Contango" and "Backwardation" in the context of fundamental supply and demand for commodity futures.' }]
   },
   {
     id: 'futures-b-06',
     title: 'Risk Management Essentials',
     description: 'Master the critical skill of protecting your capital while trading.',
-    longDescription: 'The most important aspect of trading is managing risk. Learn about position sizing, stop-loss orders, and maintaining a favorable risk-to-reward ratio.',
+    longDescription: 'The most important aspect of trading is managing risk. Learn about position sizing, stop-loss orders, and maintaining a favorable risk-to-reward ratio to ensure long-term survival.',
     category: 'Futures Trading',
     level: 'Beginner',
     duration: '4h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/futures-b-06/600/400',
-    modules: [{ title: 'Capital Protection', lessons: [{ title: 'Position Sizing', content: 'Learn how to calculate the correct trade size based on your account balance and risk tolerance, ensuring no single trade can significantly damage your capital.', duration: '1h', completed: false }] }],
-    finalAssessment: [{ questionText: 'Explain the 1% rule of risk management and how to apply it. If you have a $10,000 account, what is your maximum risk per trade?' }]
+    modules: [
+      {
+        title: 'Capital Preservation',
+        lessons: [
+          { 
+            title: 'The 1% Rule', 
+            content: 'Never risk more than 1% of your account on a single trade. We will show you how to calculate position sizes to stick to this golden rule.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=5P2sBf6Daqc',
+            assignment: 'If you have a $5,000 account, what is the maximum dollar amount you should risk on one trade according to the 1% rule?',
+            completed: false 
+          },
+          { 
+            title: 'Stop Loss Execution', 
+            content: 'A stop loss is your safety net. Learn the different types of stops: hard stops, trailing stops, and mental stops (and why you should avoid mental stops).', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=I0vI_v8EayA',
+            assignment: 'Explain why keeping a stop loss is more important for futures traders than for traditional buy-and-hold investors.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'Calculate the position size for a trade with a $200 stop loss on a $10,000 account. How many contracts can you trade if your maximum risk is 1%?' }]
   },
   {
     id: 'futures-b-07',
     title: 'Trading Psychology',
     description: 'Understand the mental and emotional challenges of trading and how to overcome them.',
-    longDescription: 'The biggest battle in trading is often with yourself. This course addresses common psychological pitfalls like fear, greed, and FOMO, and provides strategies to develop discipline.',
+    longDescription: 'The biggest battle in trading is often with yourself. This course addresses common psychological pitfalls like fear, greed, and FOMO, providing strategies to develop professional discipline.',
     category: 'Futures Trading',
     level: 'Beginner',
     duration: '5h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/futures-b-07/600/400',
-    modules: [{ title: 'Mind Over Market', lessons: [{ title: 'Fear and Greed', content: 'Learn to manage the two primary emotions in trading by creating a structured trading plan and sticking to it, regardless of emotional impulses.', duration: '1h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What is "revenge trading" and what are two practical steps a trader can take to avoid it after a loss?' }]
+    modules: [
+      {
+        title: 'Emotional Control',
+        lessons: [
+          { 
+            title: 'Overcoming Fear and Greed', 
+            content: 'Fear of loss and greed for gain are the primary drivers of trading errors. Learn how to recognize these emotions in real-time and revert to your plan.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=R9pDuxo4d90',
+            assignment: 'Maintain a 1-day mood journal while watching live charts. Note every time you feel an impulse to trade.',
+            completed: false 
+          },
+          { 
+            title: 'The Danger of FOMO', 
+            content: 'Fear Of Missing Out (FOMO) leads to chasing trades at bad prices. Learn the mindset shift required to accept that there will always be another opportunity.', 
+            duration: '3h', 
+            videoUrl: 'https://www.youtube.com/watch?v=5VjIdqGk1Z8',
+            assignment: 'Identify a recent "parabolic move" in a market and explain why entering at the peak would have been a psychological trap.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'What is "revenge trading" and what are two practical steps a trader can take to avoid it after a significant loss?' }]
   },
   {
     id: 'futures-b-08',
     title: 'Futures Trading Platforms',
     description: 'A practical guide to setting up and using popular trading software.',
-    longDescription: 'Get hands-on experience with leading trading platforms. This course walks you through setting up charts, placing orders, and managing trades.',
+    longDescription: 'Get hands-on experience with leading trading platforms like NinjaTrader and TradingView. This course walks you through setting up charts, placing orders, and managing trades efficiently.',
     category: 'Futures Trading',
     level: 'Beginner',
     duration: '3h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/futures-b-08/600/400',
-    modules: [{ title: 'Platform Setup', lessons: [{ title: 'Placing Order Types', content: 'Learn the difference between market, limit, and stop orders, and when to use each one to control your entry and exit prices effectively.', duration: '1h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What is the difference between a limit order and a market order, and in what scenario would you choose one over the other?' }]
+    modules: [
+      {
+        title: 'Platform Mastering',
+        lessons: [
+          { 
+            title: 'Order Types in Depth', 
+            content: 'Master the difference between Market, Limit, Stop, and MIT (Market-if-Touched) orders. Learn how to use "Bracket Orders" for automatic risk management.', 
+            duration: '1.5h', 
+            videoUrl: 'https://www.youtube.com/watch?v=I0vI_v8EayA',
+            assignment: 'Simulate putting on a "Bracket Order" with a 1:2 risk-to-reward ratio on a demo account.',
+            completed: false 
+          },
+          { 
+            title: 'Customizing Your Workspace', 
+            content: 'A clean workspace reduces decision fatigue. Learn how to set up DOM (Depth of Market), charts, and time & sales for optimal focus.', 
+            duration: '1.5h', 
+            videoUrl: 'https://www.youtube.com/watch?v=w6-qU9v9e9E',
+            assignment: 'Take a screenshot of a "dirty" chart and then organize it into a professional layout.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'What are the technical advantages of using a Limit order over a Market order in a high-volatility futures market?' }]
   },
   {
     id: 'futures-b-09',
     title: 'Simulated Trading Practice',
     description: 'Apply your knowledge in a risk-free environment with a trading simulator.',
-    longDescription: 'Before you risk real money, practice is essential. This course guides you through setting up a demo account and executing trades based on what you have learned.',
+    longDescription: 'Before you risk real capital, practice is essential. This course guides you through setting up a demo account and building confidence through mechanical execution.',
     category: 'Futures Trading',
     level: 'Beginner',
     duration: '10h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/futures-b-09/600/400',
-    modules: [{ title: 'Paper Trading', lessons: [{ title: 'Analyzing Your Results', content: 'Learn to keep a detailed trade journal to track your simulated trades, review your performance, and identify areas for improvement before going live.', duration: '2h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What are the three most important things to track in a trading journal during simulated trading?' }]
+    modules: [
+      {
+        title: 'The Simulator Phase',
+        lessons: [
+          { 
+            title: 'Building Muscle Memory', 
+            content: 'Treat the simulator as a real account. Practice entering and exiting trades until the platform mechanics become second nature.', 
+            duration: '5h', 
+            videoUrl: 'https://www.youtube.com/watch?v=5P2sBf6Daqc',
+            assignment: 'Execute 10 perfect trades (following your rules) in a simulator without breaking any risk management guidelines.',
+            completed: false 
+          },
+          { 
+            title: 'Journaling Your Demo Trades', 
+            content: 'A journal is your most powerful growth tool. Learn how to track entry reasons, exits, and emotional states for every demo trade.', 
+            duration: '5h', 
+            videoUrl: 'https://www.youtube.com/watch?v=q6eS8C2E7vM',
+            assignment: 'Create a spreadsheet for your trading journal and input your first 5 demo trades.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'Why is it dangerous to jump from a simulator to a live account without a proven track record of consistency in the simulator?' }]
   },
   {
     id: 'futures-b-10',
     title: 'Building a Trading Plan',
     description: 'Create a personalized and structured plan for your trading business.',
-    longDescription: 'A trading plan is your roadmap to success. This course will guide you through creating a comprehensive plan that covers your strategy, risk management, and goals.',
+    longDescription: 'A trading plan is your roadmap. This course will guide you through creating a comprehensive document that covers your strategy, risk management, and long-term financial goals.',
     category: 'Futures Trading',
     level: 'Beginner',
     duration: '4h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/futures-b-10/600/400',
-    modules: [{ title: 'Your Business Plan', lessons: [{ title: 'Defining Your Rules', content: 'Learn to set strict, unambiguous rules for trade entry, exit, and risk management to ensure disciplined trading and consistent decision-making.', duration: '1h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What are the five essential components of a comprehensive trading plan?' }]
+    modules: [
+      {
+        title: 'Strategic Architecture',
+        lessons: [
+          { 
+            title: 'Defining Your Edge', 
+            content: 'What is your advantage in the market? Learn how to define your "Edge" in simple, rule-based terms that can be repeated consistently.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=5VjIdqGk1Z8',
+            assignment: 'Write a one-paragraph description of your current trading "Edge" (e.g., I trade pullbacks in 5-minute trends).',
+            completed: false 
+          },
+          { 
+            title: 'The Checklist Manifesto', 
+            content: 'Professional traders use checklists to avoid impulsive mistakes. Learn how to build a pre-trade checklist that covers setup, risk, and target.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=R9pDuxo4d90',
+            assignment: 'Draft a 10-point checklist that you must complete before clicking the "Buy" button.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'List the five essential sections of a professional trading plan, from Strategy to Risk Management.' }]
   },
   {
     id: 'futures-i-01',
     title: 'Advanced Trading Strategies',
     description: 'Explore more complex strategies like scalping, swing trading, and pairs trading.',
-    longDescription: 'Go beyond the basics with advanced strategies. This course covers techniques for different timeframes and market conditions, providing a more versatile trading toolkit.',
+    longDescription: 'Go beyond the basics with advanced tactical strategies. This course covers multi-timeframe analysis and order flow techniques for the professional trader.',
     category: 'Futures Trading',
     level: 'Intermediate',
     duration: '12h', instructor: 'TTH Academy',
     price: 5000,
     imageUrl: 'https://picsum.photos/seed/futures-i-01/600/400',
-    modules: [{title: 'Strategy Expansion', lessons: [{ title: 'Scalping, Swinging, and Spreading', content: 'Learn the mechanics, mindset, and risk management required for very short-term scalping, multi-day swing trading, and market-neutral calendar or inter-market spread trading.', duration: '1.5h', completed: false }] }],
-    finalAssessment: [{ questionText: "Compare and contrast scalping and swing trading in terms of time commitment, psychological pressure, and typical risk-reward ratios. What type of market conditions are best suited for each strategy?" }]
+    modules: [
+      {
+        title: 'Institutional Tactics',
+        lessons: [
+          { 
+            title: 'Inter-market Analysis', 
+            content: 'Understand how different markets move together. Learn how the US Dollar, Bond yields, and S&P 500 futures correlate and diverge.', 
+            duration: '6h', 
+            videoUrl: 'https://www.youtube.com/watch?v=I0vI_v8EayA',
+            assignment: 'Find a recent example of a "divergence" where the S&P 500 rose while Bond yields also rose sharply.',
+            completed: false 
+          },
+          { 
+            title: 'Mean Reversion Strategies', 
+            content: 'Markets spend 70% of the time in ranges. Learn how to use Bollinger Bands and RSI to trade "mean reversion" back to the average price.', 
+            duration: '6h', 
+            videoUrl: 'https://www.youtube.com/watch?v=w6-qU9v9e9E',
+            assignment: 'Explain why mean reversion strategies have a higher win rate but typically smaller gains than trend-following.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'Describe a "Pairs Trade" between two correlated futures markets, such as Gold and Silver. How does a trader profit from the spread between them?' }]
   },
   {
     id: 'futures-i-02',
@@ -408,8 +667,30 @@ export const courses: Omit<Course, 'progress'>[] = [
     duration: '5h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/web3-b-02/600/400',
-    modules: [{ title: 'How it Works', lessons: [{ title: 'Consensus Mechanisms', content: 'Learn how different blockchains like Bitcoin and Ethereum agree on the state of the ledger through Proof of Work and Proof of Stake, and the trade-offs between them.', duration: '1h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What is the main difference between Proof of Work and Proof of Stake consensus mechanisms in terms of energy consumption and security?' }]
+    modules: [
+      {
+        title: 'Under the Hood',
+        lessons: [
+          { 
+            title: 'Hashes and Immutability', 
+            content: 'Learn why a blockchain cannot be modified easily. We explore the SHA-256 algorithm and how blocks are linked together.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=_160oMzblY8',
+            assignment: 'Use an online SHA-256 generator to see how changing one letter in a sentence completely changes the hash.',
+            completed: false 
+          },
+          { 
+            title: 'Consensus Mechanisms', 
+            content: 'How do thousands of nodes agree on the truth? Compare Proof of Work (Bitcoin) with Proof of Stake (Ethereum).', 
+            duration: '3h', 
+            videoUrl: 'https://www.youtube.com/watch?v=pWGLtjG-F5c',
+            assignment: 'Describe the role of a "Validator" in a Proof of Stake network.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'Why is it historically accurate to say that blockchain solves the "Byzantine Generals Problem"?' }]
   },
   {
     id: 'web3-b-03',
@@ -421,99 +702,275 @@ export const courses: Omit<Course, 'progress'>[] = [
     duration: '4h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/web3-b-03/600/400',
-    modules: [{ title: 'Meet the Coins', lessons: [{ title: 'Bitcoin vs. Ethereum', content: 'Understand the key differences between Bitcoin as a store of value and Ethereum as a platform for smart contracts and decentralized applications.', duration: '1h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What is the primary function of Ether (ETH) on the Ethereum network, and how does it differ from the primary function of Bitcoin (BTC)?' }]
+    modules: [
+      {
+        title: 'The Big Players',
+        lessons: [
+          { 
+            title: 'Bitcoin: Digital Gold', 
+            content: 'Explore Bitcoin\'s role as a store of value and a hedge against inflation. Learn why it is often called "digital gold".', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=l9jOJk30eQs',
+            assignment: 'Find the current "Market Cap" of Bitcoin using a site like CoinMarketCap.',
+            completed: false 
+          },
+          { 
+            title: 'Ethereum: The World Computer', 
+            content: 'Understand Ethereum\'s mission to build a programmable financial system. Explore Ether as gas and the primary asset for DApps.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=jxLkbJavP6Y',
+            assignment: 'What is the ERC-20 token standard, and why is it important for the Ethereum ecosystem?',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'Differentiate between a "Coin" (Native to a blockchain) and a "Token" (Built on top of a blockchain).' }]
   },
   {
     id: 'web3-b-04',
     title: 'Smart Contracts Basics',
     description: 'Learn what smart contracts are and how they automate processes on the blockchain.',
-    longDescription: 'Smart contracts are the backbone of Web3. This course explains what they are, how they work, and their potential to revolutionize industries through automation and trust.',
+    longDescription: 'Smart contracts are the backbone of Web3. This course explains what they are, how they work, and their potential to revolutionize industries through automation.',
     category: 'Web3',
     level: 'Beginner',
     duration: '3h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/web3-b-04/600/400',
-    modules: [{ title: 'Code is Law', lessons: [{ title: 'Use Cases', content: 'Explore real-world examples of smart contracts, from simple escrow services to complex financial instruments in decentralized finance (DeFi).', duration: '1h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What makes a smart contract "smart" and "self-executing"? Provide a simple, real-world analogy.' }]
+    modules: [
+      {
+        title: 'Automating Trust',
+        lessons: [
+          { 
+            title: 'How Smart Contracts Work', 
+            content: 'Think of them as "If-Then" statements on the blockchain. We cover the lifecycle of a contract from deployment to execution.', 
+            duration: '1.5h', 
+            videoUrl: 'https://www.youtube.com/watch?v=ZE2HxTmxNWg',
+            assignment: 'Write a simple "If-Then" logic for a hypothetical insurance contract that pays out if a flight is delayed.',
+            completed: false 
+          },
+          { 
+            title: 'Real World Examples', 
+            content: 'Explore how smart contracts are used in DeFi, supply chains, and even real estate to remove expensive third parties.', 
+            duration: '1.5h', 
+            videoUrl: 'https://www.youtube.com/watch?v=pWGLtjG-F5c',
+            assignment: 'Identify one industry, besides finance, that could be disrupted by smart contract technology.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'What does "immutability" mean in the context of a deployed smart contract?' }]
   },
   {
     id: 'web3-b-05',
     title: 'Decentralized Applications (DApps)',
     description: 'Discover the world of DApps and how they differ from traditional applications.',
-    longDescription: 'Learn about the new generation of applications built on the blockchain. This course explores popular DApps in DeFi, gaming, and social media.',
+    longDescription: 'DApps are the frontend of the decentralized world. Learn about the architecture of a DApp and how it interacts with the blockchain.',
     category: 'Web3',
     level: 'Beginner',
     duration: '4h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/web3-b-05/600/400',
-    modules: [{ title: 'The DApp Ecosystem', lessons: [{ title: 'Uniswap Explained', content: 'A case study of a popular DeFi DApp, exploring how it facilitates token swaps without a traditional order book.', duration: '1h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What is one key advantage a DApp has over a traditional app, and what is one key disadvantage for the end-user?' }]
+    modules: [
+      {
+        title: 'Building Decentralized',
+        lessons: [
+          { 
+            title: 'What makes a DApp?', 
+            content: 'DApps have back-ends on the blockchain. Learn about the tech stack: Frontend (React) + Smart Contracts (Solidity) + Provider (MetaMask).', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=CoNBO82D-U0',
+            assignment: 'Visit a DApp like Uniswap or OpenSea and explore the interface without connecting a wallet.',
+            completed: false 
+          },
+          { 
+            title: 'DApp Governance (DAOs)', 
+            content: 'Many DApps are governed by their users through Decentralized Autonomous Organizations. Learn about governance tokens.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=CoNBO82D-U0',
+            assignment: 'What is a "Governance Token" and how is it used to vote on protocol changes?',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'Contrast the "Server-Client" model of Web2 with the "Peer-to-Peer" model of Web3 DApps.' }]
   },
   {
     id: 'web3-b-06',
-    title: 'Web3 Wallets',
-    description: 'A practical guide to setting up and using wallets like MetaMask.',
-    longDescription: 'Your wallet is your gateway to Web3. This hands-on course guides you through setting up a self-custody wallet, sending transactions, and interacting with DApps.',
+    title: 'Web3 Wallets (MetaMask)',
+    description: 'A practical guide to setting up and using digital wallets.',
+    longDescription: 'Your wallet is your identity and your vault in Web3. This course provides a hands-on guide to using MetaMask, connecting to different networks, and managing your assets safely.',
     category: 'Web3',
     level: 'Beginner',
     duration: '3h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/web3-b-06/600/400',
-    modules: [{ title: 'Your Digital Identity', lessons: [{ title: 'Setting up MetaMask', content: 'A step-by-step guide to creating your first wallet, securing your seed phrase, and adding different networks.', duration: '1h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What is a "seed phrase" (or recovery phrase) and why is it critically important to keep it secret and secure?' }]
+    modules: [
+      {
+        title: 'Connecting to the Chain',
+        lessons: [
+          { 
+            title: 'Configuring MetaMask', 
+            content: 'Learn how to install the extension, create a secure wallet, and understand the difference between Mainnet and Testnets (like Sepolia).', 
+            duration: '1.5h', 
+            videoUrl: 'https://www.youtube.com/watch?v=SSo_EIwHSd4',
+            assignment: 'Install the MetaMask extension and create a new wallet. (Do NOT share your seed phrase with anyone).',
+            completed: false 
+          },
+          { 
+            title: 'Interacting with DApps', 
+            content: 'Learn the sequence of a transaction: Connect, Approve, and Confirm. Understand how to read the details of a transaction before signing.', 
+            duration: '1.5h', 
+            videoUrl: 'https://www.youtube.com/watch?v=SSo_EIwHSd4',
+            assignment: 'Connect your wallet to a testnet faucet (like Sepolia) and request some test tokens.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'Why is it necessary to "Approve" a smart contract to spend your tokens before you can actually execute a swap or deposit?' }]
   },
   {
     id: 'web3-b-07',
     title: 'NFTs Explained',
     description: 'Understand the technology behind Non-Fungible Tokens and their use cases.',
-    longDescription: 'NFTs are more than just digital art. This course explains the ERC-721 standard, how NFTs work on the blockchain, and their applications in art, gaming, and digital identity.',
+    longDescription: 'NFTs represent unique digital ownership. This course explains the ERC-721 and ERC-1155 standards, how metadata works, and where the actual files are stored (IPFS).',
     category: 'Web3',
     level: 'Beginner',
     duration: '3h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/web3-b-07/600/400',
-    modules: [{ title: 'Digital Ownership', lessons: [{ title: 'Beyond Art', content: 'Explore other use cases for NFTs, such as ticketing, domain names, and in-game items.', duration: '1h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What does "non-fungible" mean? Explain with an example of something fungible and something non-fungible.' }]
+    modules: [
+      {
+        title: 'Digital Ownership',
+        lessons: [
+          { 
+            title: 'Fungible vs. Non-Fungible', 
+            content: 'Learn why 1 Bitcoin is exactly like another, but 1 NFT "Bored Ape" is different from another. We discuss scarcity and provenance.', 
+            duration: '1.5h', 
+            videoUrl: 'https://www.youtube.com/watch?v=NNQLJcJEzv0',
+            assignment: 'Give an example of a physical object that is "Fungible" and one that is "Non-Fungible".',
+            completed: false 
+          },
+          { 
+            title: 'NFT Metadata and IPFS', 
+            content: 'Where is the image? Learn why putting large images on a blockchain is too expensive and how IPFS provides a decentralized alternative.', 
+            duration: '1.5h', 
+            videoUrl: 'https://www.youtube.com/watch?v=NNQLJcJEzv0',
+            assignment: 'Research what "IPFS" stands for and how it differs from traditional cloud storage like Google Drive.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'What is the ERC-721 token standard, and how does it differ from the standard ERC-20 cryptocurrency token?' }]
   },
   {
     id: 'web3-b-08',
     title: 'Web3 Security',
     description: 'Learn the basic principles of staying safe in the Web3 world.',
-    longDescription: 'The decentralized world has new risks. This course teaches you how to identify common scams, protect your private keys, and interact with DApps safely.',
+    longDescription: 'Decentralization means you are responsible for your own safety. Learn about phishing, malicious contract approvals, and the importance of hardware wallets.',
     category: 'Web3',
     level: 'Beginner',
     duration: '4h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/web3-b-08/600/400',
-    modules: [{ title: 'Protecting Your Assets', lessons: [{ title: 'Common Scams', content: 'Learn to spot phishing attempts, malicious smart contracts, and other common crypto scams.', duration: '1h', completed: false }] }],
-    finalAssessment: [{ questionText: 'Why should you never share your private key or seed phrase with anyone, even a "support agent"?' }]
+    modules: [
+      {
+        title: 'Wall of Protection',
+        lessons: [
+          { 
+            title: 'Phishing and Social Engineering', 
+            content: 'Learn how scammers try to get your seed phrase. We cover "Ice Phishing" and malicious browser extensions.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=_160oMzblY8',
+            assignment: 'Identify three red flags in a "Urgent" email claiming your wallet has been compromised.',
+            completed: false 
+          },
+          { 
+            title: 'Contract Approval Risks', 
+            content: 'Interacting with a DApp can give it permission to drain your wallet. Learn how to audit your approvals using tools like Revoke.cash.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=_160oMzblY8',
+            assignment: 'Visit Revoke.cash (Connect wallet if you have one) and see if you have any active project approvals.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'Why should you NEVER share your Seed Phrase with a "Customer Support" agent on Discord or Telegram?' }]
   },
   {
     id: 'web3-b-09',
     title: 'Ethereum for Beginners',
     description: 'A deep dive into the world\'s leading smart contract platform.',
-    longDescription: 'Ethereum is the foundation of much of Web3. This course explores its history, architecture, the role of gas fees, and its roadmap for the future.',
+    longDescription: 'Ethereum is the foundation of Web3. This course explores its history, the EVM, the role of gas fees, and the roadmap toward scalability (Layer 2s).',
     category: 'Web3',
     level: 'Beginner',
     duration: '5h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/web3-b-09/600/400',
-    modules: [{ title: 'The World Computer', lessons: [{ title: 'Understanding Gas', content: 'Learn why transactions on Ethereum cost money (gas fees) and how they are calculated based on network demand.', duration: '1h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What is "gas" in the context of Ethereum, and why is it necessary?' }]
+    modules: [
+      {
+        title: 'The World Computer',
+        lessons: [
+          { 
+            title: 'Gas and Network Fees', 
+            content: 'Learn how gas is calculated (EIP-1559) and why some transactions are more expensive than others.', 
+            duration: '2.5h', 
+            videoUrl: 'https://www.youtube.com/watch?v=jxLkbJavP6Y',
+            assignment: 'Check the current "Gas Price" (in Gwei) using an Ethereum Gas Tracker.',
+            completed: false 
+          },
+          { 
+            title: 'Introduction to Layer 2', 
+            content: 'Ethereum alone is too slow for global use. Learn about Rollups (Arbitrum, Optimism) and how they make trades cheaper and faster.', 
+            duration: '2.5h', 
+            videoUrl: 'https://www.youtube.com/watch?v=jxLkbJavP6Y',
+            assignment: 'Identify two major "Layer 2" networks currently live on Ethereum.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'Explain the relationship between Ethereum (Layer 1) and a Rollup (Layer 2) using a simple analogy.' }]
   },
   {
     id: 'web3-b-10',
     title: 'Web3 Development Tools',
     description: 'An overview of the essential tools for building on Web3.',
-    longDescription: 'Get familiar with the Web3 developer stack. This course introduces tools like Remix for quick prototyping, Hardhat for local development, and Infura/Alchemy for node access.',
+    longDescription: 'Get familiar with the Web3 developer stack. This course introduces tools like Remix for quick prototyping and Hardhat for professional local development.',
     category: 'Web3',
     level: 'Beginner',
     duration: '4h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/web3-b-10/600/400',
-    modules: [{ title: 'The Developer Stack', lessons: [{ title: 'Intro to Hardhat', content: 'Learn the benefits of a local development environment for compiling, testing, and deploying smart contracts.', duration: '1h', completed: false }] }],
-    finalAssessment: [{ questionText: 'Why is a tool like Hardhat or Foundry useful for smart contract development, as opposed to just writing code in a simple text editor?' }]
+    modules: [
+      {
+        title: 'The Developer Stack',
+        lessons: [
+          { 
+            title: 'Intro to Remix IDE', 
+            content: 'Remix is a browser-based IDE for writing and deploying Solidity. Learn how to write your first "Hello World" smart contract.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=SSo_EIwHSd4',
+            assignment: 'Open the Remix IDE in your browser and compile the default "Storage.sol" contract.',
+            completed: false 
+          },
+          { 
+            title: 'Local Dev Environments', 
+            content: 'For larger projects, you need Hardhat or Foundry. Learn about testing, deploying, and script automation.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=CoNBO82D-U0',
+            assignment: 'What are the benefits of using a local development environment versus an online IDE?',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'What is the primary language used to write smart contracts on Ethereum and other EVM-compatible chains?' }]
   },
   {
     id: 'web3-i-01',
@@ -708,9 +1165,7 @@ export const courses: Omit<Course, 'progress'>[] = [
     price: 7000,
     imageUrl: 'https://picsum.photos/seed/web3-a-08/600/400',
     modules: [{ title: 'Contribute to the Field', lessons: [{ title: 'Research Methodology', content: 'Learn how to design and execute a Web3 research project, including data collection from on-chain sources and qualitative analysis.', duration: '4h', completed: false }] }],
-    finalAssessment: [{ questionText: 'Propose a novel, specific, and testable research question related to DAO governance or DeFi user behavior.' }]
   },
-  // --- Crypto ---
   {
     id: 'crypto-b-01',
     title: 'Introduction to Cryptocurrency',
@@ -718,37 +1173,103 @@ export const courses: Omit<Course, 'progress'>[] = [
     longDescription: 'This course starts at the very beginning, with the birth of Bitcoin. We will explore the core concepts of blockchain technology, decentralization, and cryptography that make cryptocurrencies possible.',
     category: 'Crypto',
     level: 'Beginner',
-    duration: '3h', instructor: 'TTH Academy',
+    duration: '2h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/crypto-b-01/600/400',
-    modules: [{ title: 'The Bitcoin Whitepaper', lessons: [{ title: 'The Problem of Double-Spending', content: 'A conceptual breakdown of the fundamental problem of digital scarcity that Bitcoin solved, and how a distributed ledger (the blockchain) enables trustless peer-to-peer transactions.', duration: '45m', completed: false }] }],
-    finalAssessment: [{ questionText: "What is a 'blockchain' and what are its three core components? Explain briefly what each component does to contribute to the security and immutability of the ledger." }]
+    modules: [
+      {
+        title: 'Genesis of Crypto',
+        lessons: [
+          { 
+            title: 'What is Bitcoin?', 
+            content: 'Bitcoin is a decentralized digital currency without a central bank or single administrator. Learn about the 2008 whitepaper and the problem of double-spending.', 
+            duration: '1h', 
+            videoUrl: 'https://www.youtube.com/watch?v=l9jOJk30eQs',
+            assignment: 'Research and write a 100-word summary of who Satoshi Nakamoto is (or might be).',
+            completed: false 
+          },
+          { 
+            title: 'Proof of Work Explained', 
+            content: 'Understand how miners secure the network and why it is so difficult to manipulate. We discuss hashes, difficulty adjustment, and energy consumption.', 
+            duration: '1h', 
+            videoUrl: 'https://www.youtube.com/watch?v=bBC-nXj3Ng4',
+            assignment: 'Explain the difference between a Bitcoin Node and a Bitcoin Miner.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'What is the total supply of Bitcoin, and how does the "Halving" event affect the rate of new supply?' }]
   },
   {
     id: 'crypto-b-02',
-    title: 'Blockchain Technology',
-    description: 'A deeper dive into the technical workings of blockchains.',
-    longDescription: 'This course goes beyond the basics to explore the technical details of blockchain technology, including transaction lifecycle, block formation, and Merkle trees.',
+    title: 'Ethereum & Smart Contracts',
+    description: 'Learn about the programmable blockchain and decentralized applications.',
+    longDescription: 'Ethereum changed the game by introducing smart contracts. This course explores the Ethereum Virtual Machine (EVM), Ether (ETH), and the transition to Proof of Stake.',
     category: 'Crypto',
     level: 'Beginner',
     duration: '5h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/crypto-b-02/600/400',
-    modules: [{ title: 'Under the Hood', lessons: [{ title: 'Merkle Trees', content: 'Learn how Merkle trees efficiently verify data integrity within a block without having to check every single transaction.', duration: '1h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What is the purpose of a Merkle tree in a blockchain block?' }]
+    modules: [
+      {
+        title: 'Beyond Sound Money',
+        lessons: [
+          { 
+            title: 'Programmable Money', 
+            content: 'Vitalik Buterin envisioned a blockchain that could do more than just transactions. Learn how Smart Contracts enable a world of decentralized apps.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=jxLkbJavP6Y',
+            assignment: 'Name three popular decentralized applications (DApps) currently running on Ethereum.',
+            completed: false 
+          },
+          { 
+            title: 'The Merge: PoW to PoS', 
+            content: 'Understand the historic transition from Proof of Work to Proof of Stake. Learn how validators replace miners and the impact on Ethereum\'s issuance.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=RPD9VpZzO0g',
+            assignment: 'What are the minimum requirements to become a solo validator on the Ethereum network?',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'Explain the role of "Gas" on the Ethereum network and why it fluctuates based on network demand.' }]
   },
   {
     id: 'crypto-b-03',
-    title: 'Buying and Selling Crypto',
-    description: 'A practical guide to using exchanges to trade cryptocurrencies.',
-    longDescription: 'This hands-on course walks you through setting up an account on a cryptocurrency exchange, placing your first trades, and securely withdrawing your assets.',
+    title: 'Crypto Wallets 101',
+    description: 'A practical guide to securing and managing your assets.',
+    longDescription: 'Your wallet is your gateway to the crypto world. This course teaches the difference between hot and cold storage, seed phrases, and interacting with DApps.',
     category: 'Crypto',
     level: 'Beginner',
     duration: '3h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/crypto-b-03/600/400',
-    modules: [{ title: 'Using an Exchange', lessons: [{ title: 'Order Types', content: 'Learn about market, limit, and stop-limit orders to control your buying and selling prices.', duration: '1h', completed: false }] }],
-    finalAssessment: [{ questionText: 'When would you use a limit order instead of a market order when buying a cryptocurrency?' }]
+    modules: [
+      {
+        title: 'Asset Security',
+        lessons: [
+          { 
+            title: 'Custodial vs. Non-Custodial', 
+            content: 'Learn why the phrase "Not your keys, not your coins" is so important. Understand the trade-offs between convenience and security.', 
+            duration: '1h', 
+            videoUrl: 'https://www.youtube.com/watch?v=l_0607mOn4M',
+            assignment: 'Which wallet type do you currently use (or plan to use), and is it custodial or non-custodial?',
+            completed: false 
+          },
+          { 
+            title: 'Hardware Wallets', 
+            content: 'For long-term security, hardware wallets (cold storage) are the gold standard. Learn how they keep your private keys offline.', 
+            duration: '1h', 
+            videoUrl: 'https://www.youtube.com/watch?v=0kFpG0t4Cq0',
+            assignment: 'Research and name two leading hardware wallet manufacturers.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'What is a "Seed Phrase" and what are the three Golden Rules for keeping it safe?' }]
   },
   {
     id: 'crypto-b-04',
@@ -765,29 +1286,73 @@ export const courses: Omit<Course, 'progress'>[] = [
   },
   {
     id: 'crypto-b-05',
-    title: 'Crypto Security',
-    description: 'Learn to protect yourself from common scams and threats in the crypto space.',
-    longDescription: 'The crypto world can be risky. This essential course teaches you how to identify and avoid common scams, phishing attacks, and malware to keep your assets safe.',
+    title: 'Decentralized Finance (DeFi) Intro',
+    description: 'Discover the world of permissionless lending, borrowing, and trading.',
+    longDescription: 'DeFi aims to remove the middleman from financial services. This course introduces liquidity pools, yield farming, and automated market makers (AMMs).',
+    category: 'Crypto',
+    level: 'Beginner',
+    duration: '6h', instructor: 'TTH Academy',
+    price: 0,
+    imageUrl: 'https://picsum.photos/seed/crypto-b-05/600/400',
+    modules: [
+      {
+        title: 'The Future of Banking',
+        lessons: [
+          { 
+            title: 'What are Liquidity Pools?', 
+            content: 'In DeFi, anyone can become a liquidity provider. Learn how platforms like Uniswap use mathematical formulas to facilitate trades.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=cizLhxSKrAc',
+            assignment: 'Explain the concept of "Impermanent Loss" in your own words.',
+            completed: false 
+          },
+          { 
+            title: 'Stablecoins in DeFi', 
+            content: 'Stablecoins are the engine of DeFi. Learn how assets like USDC and DAI provide a stable unit of account in a volatile market.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=3-p8_uM9N0s',
+            assignment: 'Research the difference between a centralized stablecoin (USDC) and a decentralized one (DAI).',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'Why is it said that DeFi is "permissionless"? How does this contrast with a traditional bank account?' }]
+  },
+  {
+    id: 'crypto-b-06',
+    title: 'Stablecoins & Tokenomics',
+    description: 'Understand the economies of digital assets.',
+    longDescription: 'How do cryptocurrencies maintain value? This course explores the mechanics of stablecoins (fiat-backed, algorithmic, and crypto-backed) and the principles of supply and demand in tokenomics.',
     category: 'Crypto',
     level: 'Beginner',
     duration: '4h', instructor: 'TTH Academy',
     price: 0,
-    imageUrl: 'https://picsum.photos/seed/crypto-b-05/600/400',
-    modules: [{ title: 'Staying Safe', lessons: [{ title: 'Recognizing Scams', content: 'Learn to spot red flags in crypto projects, communications, and airdrop campaigns.', duration: '1h', completed: false }] }],
-    finalAssessment: [{ questionText: 'Describe two common types of cryptocurrency scams and how to avoid them.' }]
-  },
-  {
-    id: 'crypto-b-06',
-    title: 'Understanding Altcoins',
-    description: 'Explore the world of cryptocurrencies beyond Bitcoin and Ethereum.',
-    longDescription: 'There are thousands of "altcoins." This course provides a framework for evaluating different projects based on their technology, team, and tokenomics.',
-    category: 'Crypto',
-    level: 'Beginner',
-    duration: '5h', instructor: 'TTH Academy',
-    price: 0,
     imageUrl: 'https://picsum.photos/seed/crypto-b-06/600/400',
-    modules: [{ title: 'Beyond the Majors', lessons: [{ title: 'Tokenomics 101', content: 'Learn how token supply, distribution, and utility affect a project\'s long-term value.', duration: '1h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What are "tokenomics" and why are they important to consider when evaluating a cryptocurrency project?' }]
+    modules: [
+      {
+        title: 'The Backbone of Trade',
+        lessons: [
+          { 
+            title: 'Types of Stablecoins', 
+            content: 'Not all stablecoins are created equal. Discover how USDT, DAI, and USDe use different mechanisms to maintain their peg to the US Dollar.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=3-p8_uM9N0s',
+            assignment: 'Explain what happens when an algorithmic stablecoin "de-pegs" from its target price.',
+            completed: false 
+          },
+          { 
+            title: 'Token Issuance and Burns', 
+            content: 'Learn about inflation and deflation in the crypto world. We cover token burns, hard caps, and vesting schedules.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=l9jOJk30eQs',
+            assignment: 'Find a crypto project that uses a "Burn" mechanism and explain how it benefits token holders.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'Why is "Tokenomics" considered a vital part of a project\'s fundamental analysis?' }]
   },
   {
     id: 'crypto-b-07',
@@ -804,16 +1369,38 @@ export const courses: Omit<Course, 'progress'>[] = [
   },
   {
     id: 'crypto-b-08',
-    title: 'ICO and Token Sales',
-    description: 'Understand how new crypto projects raise funds.',
-    longDescription: 'This course explains the process of Initial Coin Offerings (ICOs), Initial Exchange Offerings (IEOs), and other token sale models, and how to evaluate them as a potential investor.',
+    title: 'Altcoins & Market Cycles',
+    description: 'Understand the flow of money in the crypto ecosystem.',
+    longDescription: 'Crypto markets move in predictable cycles. Learn about the four phases of a market cycle: Accumulation, Markup, Distribution, and Markdown.',
     category: 'Crypto',
     level: 'Beginner',
-    duration: '4h', instructor: 'TTH Academy',
+    duration: '5h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/crypto-b-08/600/400',
-    modules: [{ title: 'Fundraising in Crypto', lessons: [{ title: 'Evaluating Whitepapers', content: 'Learn what to look for in a project\'s whitepaper to assess its viability, team, and technology.', duration: '1h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What are some red flags to look for when evaluating an ICO or new token sale?' }]
+    modules: [
+      {
+        title: 'Cycle Mastery',
+        lessons: [
+          { 
+            title: 'The 4-Year Cycle', 
+            content: 'Bitcoin has historically followed a 4-year cycle driven by the Halving. Learn how this impacts the broader altcoin market.', 
+            duration: '2.5h', 
+            videoUrl: 'https://www.youtube.com/watch?v=l9jOJk30eQs',
+            assignment: 'Research when the next Bitcoin Halving is scheduled to occur.',
+            completed: false 
+          },
+          { 
+            title: 'Altcoin Season Dynamics', 
+            content: 'Money typically flows from BTC to large-caps, then mid-caps, then small-caps. Learn how to spot when "Altcoin Season" is starting.', 
+            duration: '2.5h', 
+            videoUrl: 'https://www.youtube.com/watch?v=5P2sBf6Daqc',
+            assignment: 'Define what "Bitcoin Dominance" (BTC.D) signifies and how it relates to altcoin performance.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'Describe the characteristics of the "Distribution" phase of a market cycle. What should a trader be doing during this phase?' }]
   },
   {
     id: 'crypto-b-09',
@@ -830,16 +1417,38 @@ export const courses: Omit<Course, 'progress'>[] = [
   },
   {
     id: 'crypto-b-10',
-    title: 'Building a Crypto Portfolio',
-    description: 'Learn the principles of diversification and portfolio construction for crypto assets.',
-    longDescription: 'This course teaches you how to build and manage a diversified cryptocurrency portfolio, balancing risk and reward based on your personal goals and risk tolerance.',
+    title: 'Regulatory Landscape',
+    description: 'Understand the legal side of cryptocurrencies.',
+    longDescription: 'Regulations are changing rapidly. Learn about the roles of the SEC, MiCA in Europe, and how taxes apply to your crypto trades.',
     category: 'Crypto',
     level: 'Beginner',
     duration: '4h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/crypto-b-10/600/400',
-    modules: [{ title: 'Portfolio Strategy', lessons: [{ title: 'Diversification', content: 'Learn why you shouldn\'t put all your eggs in one basket and how to diversify across different types of crypto assets.', duration: '1h', completed: false }] }],
-    finalAssessment: [{ questionText: 'Why is diversification particularly important in a cryptocurrency portfolio?' }]
+    modules: [
+      {
+        title: 'Tokens and the Law',
+        lessons: [
+          { 
+            title: 'Is it a Security?', 
+            content: 'Understand the "Howey Test". Learn why the SEC considers some tokens to be securities and the implications for exchanges.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=jxLkbJavP6Y',
+            assignment: 'Research a recent court case involving the SEC and a crypto project (e.g., Ripple/XRP).',
+            completed: false 
+          },
+          { 
+            title: 'Crypto Taxes 101', 
+            content: 'In most countries, crypto is taxed as property. Learn about capital gains, short-term vs. long-term rates, and how to track your trades.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=RPD9VpZzO0g',
+            assignment: 'Find out the primary tax laws for cryptocurrency in your country of residence.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'What are the potential benefits and drawbacks of increased government regulation in the crypto space?' }]
   },
   {
     id: 'crypto-i-01',
@@ -1034,47 +1643,111 @@ export const courses: Omit<Course, 'progress'>[] = [
     price: 7000,
     imageUrl: 'https://picsum.photos/seed/crypto-a-08/600/400',
     modules: [{ title: 'Pushing the Frontier', lessons: [{ title: 'Publishing Your Work', content: 'Learn how to structure a research paper, submit to academic conferences or journals, and contribute your findings to the community.', duration: '4h', completed: false }] }],
-    finalAssessment: [{ questionText: 'Propose a novel research question in the field of cryptocurrency or DeFi that you could investigate.' }]
   },
-  // --- Tech Skills ---
   {
     id: 'tech-b-01',
-    title: 'Introduction to Programming',
-    description: 'Learn the fundamental concepts of programming using Python.',
-    longDescription: 'This course is for absolute beginners with no prior programming experience. You will learn the core concepts of programming, including variables, control flow, functions, and data structures, using the beginner-friendly Python language.',
+    title: 'Intro to Coding',
+    description: 'The foundation of the digital world. Learn the basics of programming.',
+    longDescription: 'What is code? This course introduces the fundamental concepts of programming, including variables, loops, and logic. No prior experience required.',
     category: 'Tech Skills',
     level: 'Beginner',
-    duration: '12h', instructor: 'TTH Academy',
+    duration: '4h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/tech-b-01/600/400',
-    modules: [{ title: 'First Steps in Code', lessons: [{ title: 'Variables and Data Types', content: 'Learn the building blocks of programming, including how to store and manipulate different types of information like numbers, text, and booleans.', duration: '2h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What is the difference between a list and a dictionary in Python? Provide an example of when you would use each.' }]
+    modules: [
+      {
+        title: 'The Logic of Code',
+        lessons: [
+          { 
+            title: 'What is a Programmer?', 
+            content: 'Coding is about problem-solving. Learn how computers interpret instructions and the difference between high-level and low-level languages.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=zOjov-2OZ0E',
+            assignment: 'Explain the "Input-Process-Output" model using a simple real-world example like a vending machine.',
+            completed: false 
+          },
+          { 
+            title: 'Variables and Data Types', 
+            content: 'Strings, Integers, Booleans, and Arrays. Learn how programs store and manipulate data.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=zOjov-2OZ0E',
+            assignment: 'Write a list of 5 things in your room and identify what "Data Type" each one would be in a computer program.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'What is an "algorithm" and why is it the most important concept in coding?' }]
   },
   {
     id: 'tech-b-02',
-    title: 'Web Development Fundamentals',
-    description: 'Learn the three core languages of the web: HTML, CSS, and JavaScript.',
-    longDescription: 'This course provides a solid foundation in frontend web development. You will learn how to structure web pages with HTML, style them with CSS, and add interactivity with JavaScript.',
+    title: 'Web Development Basics',
+    description: 'Learn how to build websites using HTML and CSS.',
+    longDescription: 'The web is built on three pillars: HTML for structure, CSS for style, and JavaScript for behavior. This course covers the first two to get you building beautiful pages.',
     category: 'Tech Skills',
     level: 'Beginner',
-    duration: '18h', instructor: 'TTH Academy',
+    duration: '6h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/tech-b-02/600/400',
-    modules: [{ title: 'Building for the Web', lessons: [{ title: 'DOM Manipulation', content: 'Learn how to use JavaScript to dynamically interact with and modify the content and structure of a web page.', duration: '2h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What is the purpose of the CSS "box model" and what are its four main components?' }]
+    modules: [
+      {
+        title: 'HTML & CSS Foundations',
+        lessons: [
+          { 
+            title: 'The Semantic Web (HTML)', 
+            content: 'Learn how to structure your content using tags like <h1>, <p>, and <div>. Understand the importance of accessibility and SEO.', 
+            duration: '3h', 
+            videoUrl: 'https://www.youtube.com/watch?v=kUMe1FH4CHE',
+            assignment: 'Create a simple "About Me" page structure using only HTML tags.',
+            completed: false 
+          },
+          { 
+            title: 'Styling with CSS', 
+            content: 'Make it look pretty! Learn about colors, fonts, the "Box Model", and how to make layouts responsive with Flexbox.', 
+            duration: '3h', 
+            videoUrl: 'https://www.youtube.com/watch?v=1PnVor36_40',
+            assignment: 'Change the background color and font of your "About Me" page using a simple CSS file.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'What is the "Box Model" in CSS and how does it affect the layout of elements on a page?' }]
   },
   {
     id: 'tech-b-03',
-    title: 'Data Structures and Algorithms',
-    description: 'Understand the essential data structures and algorithms for problem-solving.',
-    longDescription: 'This course is a must for any aspiring software engineer. You will learn about fundamental data structures like arrays, linked lists, and trees, as well as key algorithms for searching and sorting.',
+    title: 'JavaScript Foundations',
+    description: 'Master the language that powers the interactive web.',
+    longDescription: 'JavaScript brings the internet to life. Learn about functions, events, the DOM, and how to write code that reacts to user input.',
     category: 'Tech Skills',
     level: 'Beginner',
-    duration: '20h', instructor: 'TTH Academy',
+    duration: '8h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/tech-b-03/600/400',
-    modules: [{ title: 'Efficient Problem Solving', lessons: [{ title: 'Big O Notation', content: 'Learn how to analyze the efficiency and scalability of algorithms, a critical skill for writing high-performance code.', duration: '2h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What is Big O notation and why is it important for a software developer to understand?' }]
+    modules: [
+      {
+        title: 'Making the Web Move',
+        lessons: [
+          { 
+            title: 'JS Syntax and Functions', 
+            content: 'Understand variables, if-statements, and the power of reusable functions. Learn how to debug your code in the browser console.', 
+            duration: '4h', 
+            videoUrl: 'https://www.youtube.com/watch?v=W6NZfCO5SIk',
+            assignment: 'Write a JavaScript function that takes a name as input and returns a "Hello [name]" string.',
+            completed: false 
+          },
+          { 
+            title: 'DOM Manipulation', 
+            content: 'Document Object Model (DOM) is how JS "talks" to HTML. Learn how to change text, colors, and images on the fly based on user clicks.', 
+            duration: '4h', 
+            videoUrl: 'https://www.youtube.com/watch?v=W6NZfCO5SIk',
+            assignment: 'Explain what `document.getElementById` does and give an example use case.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'What is an "Event Listener" in JavaScript and why is it essential for building interactive web apps?' }]
   },
   {
     id: 'tech-b-04',
@@ -1104,16 +1777,38 @@ export const courses: Omit<Course, 'progress'>[] = [
   },
   {
     id: 'tech-b-06',
-    title: 'Cloud Computing Basics',
-    description: 'An introduction to the fundamentals of cloud computing with AWS, Azure, and GCP.',
-    longDescription: 'This course provides a high-level overview of cloud computing, explaining core concepts like IaaS, PaaS, and SaaS, and introducing the key services of the major cloud providers.',
+    title: 'Introduction to Cybersecurity',
+    description: 'Learn how to protect systems, networks, and data from digital attacks.',
+    longDescription: 'The digital world is full of threats. This course covers the basics of cybersecurity, including common attack vectors, encryption, and the principles of the CIA triad (Confidentiality, Integrity, and Availability).',
     category: 'Tech Skills',
     level: 'Beginner',
-    duration: '10h', instructor: 'TTH Academy',
+    duration: '5h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/tech-b-06/600/400',
-    modules: [{ title: 'The Cloud Explained', lessons: [{ title: 'IaaS, PaaS, SaaS', content: 'Understand the different cloud service models and when you might choose one over the others.', duration: '1h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What is the difference between Infrastructure as a Service (IaaS) and Platform as a Service (PaaS)? Give an example of a service for each.' }]
+    modules: [
+      {
+        title: 'Cyber Defense 101',
+        lessons: [
+          { 
+            title: 'Common Attack Vectors', 
+            content: 'Understand how hackers gain access: Phishing, Malware, DDoS, and Man-in-the-Middle attacks. Learn how to spot the red flags.', 
+            duration: '2.5h', 
+            videoUrl: 'https://www.youtube.com/watch?v=inWWhr5tnEA',
+            assignment: 'Explain the difference between a "Virus" and a "Worm".',
+            completed: false 
+          },
+          { 
+            title: 'Encryption and Privacy', 
+            content: 'Learn how math protects your data. Discover the difference between Symmetric and Asymmetric encryption (Public/Private keys).', 
+            duration: '2.5h', 
+            videoUrl: 'https://www.youtube.com/watch?v=inWWhr5tnEA',
+            assignment: 'Research and write a 50-word summary of what a "VPN" does.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'What are the three components of the "CIA Triad" in cybersecurity?' }]
   },
   {
     id: 'tech-b-07',
@@ -1130,42 +1825,108 @@ export const courses: Omit<Course, 'progress'>[] = [
   },
   {
     id: 'tech-b-08',
-    title: 'Software Testing',
-    description: 'An introduction to the principles and practices of software quality assurance.',
-    longDescription: 'This course covers the basics of software testing, including unit tests, integration tests, and end-to-end tests, as well as bug tracking and reporting.',
+    title: 'Networking Basics',
+    description: 'Understand how computers communicate across the globe.',
+    longDescription: 'How does a packet of data get from your laptop to a server on the other side of the world? This course covers IP addresses, DNS, and the OSI model.',
     category: 'Tech Skills',
     level: 'Beginner',
-    duration: '10h', instructor: 'TTH Academy',
+    duration: '4h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/tech-b-08/600/400',
-    modules: [{ title: 'Ensuring Quality', lessons: [{ title: 'The Testing Pyramid', content: 'Understand the different levels of software testing and why it is important to have a good balance of each.', duration: '1h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What is the purpose of a unit test, and how does it differ from an integration test?' }]
+    modules: [
+      {
+        title: 'The Connected World',
+        lessons: [
+          { 
+            title: 'IP Addresses and DNS', 
+            content: 'IP addresses are the coordinates of the web. Learn how the Domain Name System (DNS) translates human names (google.com) into IP addresses.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=2-76_f8S8iA',
+            assignment: 'What is the "Loopback Address" on your computer (IPv4)?',
+            completed: false 
+          },
+          { 
+            title: 'The OSI Model', 
+            content: 'A 7-layer framework for understanding network communication. Learn what happens at each layer, from the physical cable to the browser.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=2-76_f8S8iA',
+            assignment: 'At which layer of the OSI model does a Router operate?',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'Explain the "Client-Server" relationship in networking. Who initiates the connection and who provides the resource?' }]
   },
   {
     id: 'tech-b-09',
-    title: 'Agile Methodology',
-    description: 'Learn the principles and practices of Agile software development.',
-    longDescription: 'This course introduces the Agile mindset and popular frameworks like Scrum and Kanban, teaching you how modern software teams build and ship products iteratively.',
+    title: 'Cloud Computing Overview',
+    description: 'Learn about AWS, Azure, and Google Cloud and the shift to the cloud.',
+    longDescription: 'Why own servers when you can rent them? This course introduces the business and technical benefits of Cloud Computing, including IaaS, PaaS, and SaaS.',
     category: 'Tech Skills',
     level: 'Beginner',
-    duration: '8h', instructor: 'TTH Academy',
+    duration: '3h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/tech-b-09/600/400',
-    modules: [{ title: 'Building Better Products', lessons: [{ title: 'Scrum Roles and Ceremonies', content: 'Learn about sprints, daily stand-ups, sprint planning, and retrospectives.', duration: '2h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What is the purpose of a "daily stand-up" or "daily scrum" in the Scrum framework?' }]
+    modules: [
+      {
+        title: 'The Cloud Shift',
+        lessons: [
+          { 
+            title: 'IaaS, PaaS, and SaaS', 
+            content: 'Understand the three main "Service Models". Learn when to use a virtual server (EC2) vs. a platform like Vercel or Heroku.', 
+            duration: '1.5h', 
+            videoUrl: 'https://www.youtube.com/watch?v=M988_fsOSWo',
+            assignment: 'Give a real-world example of a SaaS (Software as a Service) tool you use.',
+            completed: false 
+          },
+          { 
+            title: 'Scaling and Elasticity', 
+            content: 'The cloud\'s greatest superpower. Learn how systems can automatically scale up during high traffic and scale down to save money.', 
+            duration: '1.5h', 
+            videoUrl: 'https://www.youtube.com/watch?v=M988_fsOSWo',
+            assignment: 'Why is "Elasticity" a better term than just "Scaling" in the cloud?',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'What are the main advantages of Cloud Computing over traditional On-Premises data centers?' }]
   },
   {
     id: 'tech-b-10',
-    title: 'Tech Career Development',
-    description: 'A guide to building a successful career in the technology industry.',
-    longDescription: 'This course covers the non-technical skills needed for a tech career, including resume building, technical interviewing, networking, and career path planning.',
+    title: 'DevOps and CI/CD Intro',
+    description: 'Learn the modern workflow for building and deploying software.',
+    longDescription: 'DevOps is more than just tools—it\'s a culture. This course explains the Software Development Life Cycle (SDLC) and how Continuous Integration and Continuous Deployment (CI/CD) work.',
     category: 'Tech Skills',
     level: 'Beginner',
-    duration: '6h', instructor: 'TTH Academy',
+    duration: '4h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/tech-b-10/600/400',
-    modules: [{ title: 'Your Career Path', lessons: [{ title: 'The Technical Interview', content: 'Learn how to prepare for and excel in technical interviews, including data structure and algorithm questions.', duration: '2h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What is the STAR method, and how can it be used to answer behavioral interview questions?' }]
+    modules: [
+      {
+        title: 'Modern Workflows',
+        lessons: [
+          { 
+            title: 'The SDLC Cycle', 
+            content: 'From Planning to Monitoring. Learn about the infinity loop of DevOps and how it reduces the time between "code written" and "code live".', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=j5Zsa_eOXeY',
+            assignment: 'Identify the five main stages of the Software Development Life Cycle.',
+            completed: false 
+          },
+          { 
+            title: 'Intro to CI/CD', 
+            content: 'Learn how tools like GitHub Actions or Jenkins automatically test and deploy your code every time you make a commit.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=scEDHsr3APg',
+            assignment: 'Explain what happens if a "test" fails in a CI/CD pipeline.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'Why is "Automation" considered the most important part of a successful DevOps implementation?' }]
   },
   {
     id: 'tech-i-01',
@@ -1365,29 +2126,73 @@ export const courses: Omit<Course, 'progress'>[] = [
   // --- AI & Machine Learning ---
   {
     id: 'ai-b-01',
-    title: 'Introduction to AI',
-    description: 'Get a clear, non-technical overview of the world of AI and its possibilities.',
-    longDescription: 'This course is for absolute beginners who want to understand the buzz around AI. We will demystify terms like Machine Learning, Deep Learning, and Neural Networks, exploring real-world applications and ethical considerations.',
+    title: 'Intro to AI',
+    description: 'Explore the history and future of Artificial Intelligence.',
+    longDescription: 'What is AI? This course covers the basics of Artificial Intelligence, from its origins in the 1950s to the modern era of Large Language Models and generative art.',
     category: 'AI & Machine Learning',
     level: 'Beginner',
     duration: '3h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/ai-b-01/600/400',
-    modules: [{ title: 'The AI Revolution', lessons: [{ title: 'What is Machine Learning?', content: 'A conceptual overview of how machines learn from data without being explicitly programmed. We explore the three main types: supervised, unsupervised, and reinforcement learning.', duration: '45m', completed: false }] }],
-    finalAssessment: [{ questionText: "Briefly explain the difference between Supervised and Unsupervised learning. Give one real-world example of a problem that would be solved by each type." }]
+    modules: [
+      {
+        title: 'The AI Landscape',
+        lessons: [
+          { 
+            title: 'What is Artificial Intelligence?', 
+            content: 'Learn the difference between "Narrow AI" (tasks like chess) and "General AI" (human-like reasoning). Discover how AI is already part of your daily life.', 
+            duration: '1.5h', 
+            videoUrl: 'https://www.youtube.com/watch?v=ad79nYk2kEg',
+            assignment: 'Identify three ways you interacted with an AI system in the last 24 hours.',
+            completed: false 
+          },
+          { 
+            title: 'The History of AI', 
+            content: 'From the Turing Test to the "AI Winters" and the eventual breakthrough of Deep Learning. Understand the milestones that brought us here.', 
+            duration: '1.5h', 
+            videoUrl: 'https://www.youtube.com/watch?v=ad79nYk2kEg',
+            assignment: 'Who is Alan Turing and why is his "test" still discussed today?',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'Explain the core difference between specialized (narrow) AI and general AI.' }]
   },
   {
     id: 'ai-b-02',
-    title: 'Machine Learning Fundamentals',
-    description: 'Learn the basic concepts and algorithms in machine learning.',
-    longDescription: 'This course covers the foundational algorithms and concepts in machine learning, providing the essential knowledge needed to start building your own models.',
+    title: 'Machine Learning Basics',
+    description: 'Learn how computers learn from data without being explicitly programmed.',
+    longDescription: 'Machine Learning is the engine of modern AI. Study the three main types: Supervised, Unsupervised, and Reinforcement Learning.',
     category: 'AI & Machine Learning',
     level: 'Beginner',
-    duration: '15h', instructor: 'TTH Academy',
+    duration: '6h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/ai-b-02/600/400',
-    modules: [{ title: 'Core Algorithms', lessons: [{ title: 'Linear Regression', content: 'Learn to predict continuous values by fitting a line to data. This is a foundational supervised learning algorithm.', duration: '2h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What is the difference between classification and regression in machine learning?' }]
+    modules: [
+      {
+        title: 'Learning Paradigms',
+        lessons: [
+          { 
+            title: 'Supervised vs. Unsupervised', 
+            content: 'Learn how labeled data (Supervised) differs from find patterns in raw data (Unsupervised). We cover regression and clustering.', 
+            duration: '3h', 
+            videoUrl: 'https://www.youtube.com/watch?v=IpGxLWOIZy4',
+            assignment: 'If you want to predict house prices, would you use Supervised or Unsupervised learning? Explain why.',
+            completed: false 
+          },
+          { 
+            title: 'Reinforcement Learning', 
+            content: 'How AI learns through trial and error. Discover how agents are trained to play games like Chess and Go through reward systems.', 
+            duration: '3h', 
+            videoUrl: 'https://www.youtube.com/watch?v=IpGxLWOIZy4',
+            assignment: 'Describe a "Reward Function" for an AI agent learning to navigate a simple maze.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'What is the role of a "Training Set" versus a "Test Set" in a machine learning project?' }]
   },
   {
     id: 'ai-b-03',
@@ -1430,29 +2235,73 @@ export const courses: Omit<Course, 'progress'>[] = [
   },
   {
     id: 'ai-b-06',
-    title: 'Unsupervised Learning',
-    description: 'Explore algorithms for finding patterns in unlabeled data.',
-    longDescription: 'This course introduces you to the world of unsupervised learning, covering clustering algorithms like K-Means and dimensionality reduction techniques like PCA.',
+    title: 'Prompt Engineering 101',
+    description: 'Learn the art of communicating with Large Language Models.',
+    longDescription: 'How you ask matters. Learn the techniques used to get high-quality results from LLMs like ChatGPT, Claude, and Gemini. Master zero-shot, few-shot, and chain-of-thought prompting.',
     category: 'AI & Machine Learning',
     level: 'Beginner',
-    duration: '16h', instructor: 'TTH Academy',
+    duration: '2h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/ai-b-06/600/400',
-    modules: [{ title: 'Finding Structure', lessons: [{ title: 'K-Means Clustering', content: 'Learn to group similar data points into clusters without any prior labels.', duration: '2h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What is the main goal of a clustering algorithm like K-Means?' }]
+    modules: [
+      {
+        title: 'Mastering the Prompt',
+        lessons: [
+          { 
+            title: 'Foundations of Prompting', 
+            content: 'Understand the "Role-Task-Context" framework. Learn how to set the persona for an AI to get specialized advice.', 
+            duration: '1h', 
+            videoUrl: 'https://www.youtube.com/watch?v=jC4v5AS4RIM',
+            assignment: 'Write a prompt that asks a "Financial Expert" AI to explain inflation to a 5-year-old.',
+            completed: false 
+          },
+          { 
+            title: 'Few-Shot and Chain-of-Thought', 
+            content: 'Learn how giving examples (few-shot) and asking the AI to "think step-by-step" (CoT) drastically improves accuracy in math and logic.', 
+            duration: '1h', 
+            videoUrl: 'https://www.youtube.com/watch?v=jC4v5AS4RIM',
+            assignment: 'Provide an example of a "Few-Shot" prompt for a creative writing task.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'Explain the "Chain of Thought" prompting technique and why it helps LLMs with complex reasoning tasks.' }]
   },
   {
     id: 'ai-b-07',
-    title: 'Neural Networks Basics',
-    description: 'An introduction to the architecture and function of neural networks.',
-    longDescription: 'This course demystifies neural networks, explaining the concepts of neurons, layers, activation functions, and backpropagation in a clear and accessible way.',
+    title: 'Generative AI Tools',
+    description: 'Explore the creative potential of AI for images, music, and art.',
+    longDescription: 'Generative AI is transforming creativity. Learn how to use Midjourney for art, Suno for music, and Runway for video generation.',
     category: 'AI & Machine Learning',
     level: 'Beginner',
-    duration: '14h', instructor: 'TTH Academy',
+    duration: '3h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/ai-b-07/600/400',
-    modules: [{ title: 'Brain-Inspired Computing', lessons: [{ title: 'Activation Functions', content: 'Learn the role of non-linear activation functions like ReLU and Sigmoid in allowing neural networks to learn complex patterns.', duration: '2h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What is the purpose of an activation function in a neural network?' }]
+    modules: [
+      {
+        title: 'Creative AI',
+        lessons: [
+          { 
+            title: 'AI Art with Midjourney', 
+            content: 'Learn how Diffusion models work to create stunning visuals from text. Explore aspect ratios, stylize parameters, and vary-region tools.', 
+            duration: '1.5h', 
+            videoUrl: 'https://www.youtube.com/watch?v=SSo_EIwHSd4',
+            assignment: 'Generate (or research) three different art styles for the same prompt: "A futuristic city in the clouds".',
+            completed: false 
+          },
+          { 
+            title: 'AI Music and Audio', 
+            content: 'Discover how AI is being used to compose melodies and clone voices. Understand the ethical implications for the music industry.', 
+            duration: '1.5h', 
+            videoUrl: 'https://www.youtube.com/watch?v=CoNBO82D-U0',
+            assignment: 'Identify one platform that allows creators to use AI-generated music legally in their videos.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'How do "Diffusion Models" create images? Describe the process from "Noise" to a final clean image.' }]
   },
   {
     id: 'ai-b-08',
@@ -1469,16 +2318,38 @@ export const courses: Omit<Course, 'progress'>[] = [
   },
   {
     id: 'ai-b-09',
-    title: 'AI Tools',
-    description: 'A practical guide to using popular AI and machine learning libraries.',
-    longDescription: 'This course gets you hands-on with the essential tools of the trade, including Scikit-learn for classical machine learning, and TensorFlow/PyTorch for deep learning.',
+    title: 'AI in Trading & Finance',
+    description: 'Learn how AI is revolutionizing the financial world.',
+    longDescription: 'Explore algorithmic trading, sentiment analysis for news, and using AI for fraud detection. Understand how quantitative hedge funds use machine learning.',
     category: 'AI & Machine Learning',
     level: 'Beginner',
-    duration: '12h', instructor: 'TTH Academy',
+    duration: '5h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/ai-b-09/600/400',
-    modules: [{ title: 'The ML Toolbox', lessons: [{ title: 'Intro to Scikit-learn', content: 'Build your first models for classification, regression, and clustering using this powerful and easy-to-use library.', duration: '2h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What is the main purpose of the Scikit-learn library in the Python ecosystem?' }]
+    modules: [
+      {
+        title: 'Quantitative AI',
+        lessons: [
+          { 
+            title: 'Sentiment Analysis for Markets', 
+            content: 'AI can read millions of tweets and news articles in seconds. Learn how "Sentiment Scores" are used to predict short-term price moves.', 
+            duration: '2.5h', 
+            videoUrl: 'https://www.youtube.com/watch?v=IpGxLWOIZy4',
+            assignment: 'Research how a "Sentiment Index" might have changed during a recent major market event.',
+            completed: false 
+          },
+          { 
+            title: 'Algorithmic Trading Intro', 
+            content: 'High-frequency trading (HFT) and AI bots. Learn about the infrastructure required to run automated trading strategies.', 
+            duration: '2.5h', 
+            videoUrl: 'https://www.youtube.com/watch?v=IpGxLWOIZy4',
+            assignment: 'What are the pros and cons of using an AI bot to manage your trades versus doing it manually?',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'What is a "Flash Crash" and how can automated AI trading potentially contribute to it?' }]
   },
   {
     id: 'ai-b-10',

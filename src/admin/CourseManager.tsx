@@ -10,13 +10,14 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Pencil, Trash2, Library, RefreshCw, Loader2, Sparkles, UploadCloud } from 'lucide-react';
+import { Pencil, Trash2, Library, RefreshCw, Loader2, Sparkles, AlertTriangle, UploadCloud } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { CourseForm } from '@/components/admin/CourseForm';
 import { Skeleton } from '@/components/ui/skeleton';
 import { z } from 'zod';
 import { NewCourseSchema } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 import { getCourses } from '@/services/course-data';
 import { courses as staticCoursesToSeed } from '@/lib/courses';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -30,6 +31,8 @@ export function CourseManager() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSeeding, setIsSeeding] = useState<string | null>(null); // Store the ID of the course being seeded
+  const [isBulkSeeding, setIsBulkSeeding] = useState(false);
+  const [seedingProgress, setSeedingProgress] = useState({ current: 0, total: 0 });
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const { toast } = useToast();
@@ -86,6 +89,69 @@ export function CourseManager() {
     }
   };
 
+  const handleSeedAll = async () => {
+    if (unseededCourses.length === 0) return;
+    
+    setIsBulkSeeding(true);
+    setSeedingProgress({ current: 0, total: unseededCourses.length });
+    
+    let successCount = 0;
+    let failCount = 0;
+
+    for (const course of unseededCourses) {
+        try {
+            const validatedData = NewCourseSchema.parse(course);
+            await setDoc(doc(db, 'courses', course.id), validatedData);
+            successCount++;
+        } catch (error) {
+            console.error(`Failed to seed course ${course.id}: `, error);
+            failCount++;
+        }
+        setSeedingProgress(prev => ({ ...prev, current: prev.current + 1 }));
+    }
+
+    toast({
+        title: "Bulk Seeding Complete",
+        description: `Seeded ${successCount} courses successfully. ${failCount} failed.`,
+        variant: failCount > 0 ? "destructive" : "success",
+    });
+
+    setIsBulkSeeding(false);
+    await fetchCourses();
+  };
+
+  const handleForceSyncAll = async () => {
+    const confirmSync = window.confirm("This will overwrite all 125+ courses in the database with the versions in your codebase. Are you sure?");
+    if (!confirmSync) return;
+
+    setIsBulkSeeding(true);
+    setSeedingProgress({ current: 0, total: staticCoursesToSeed.length });
+    
+    let successCount = 0;
+    let failCount = 0;
+
+    for (const course of staticCoursesToSeed) {
+        try {
+            const validatedData = NewCourseSchema.parse(course);
+            await setDoc(doc(db, 'courses', course.id), validatedData);
+            successCount++;
+        } catch (error) {
+            console.error(`Failed to sync course ${course.id}: `, error);
+            failCount++;
+        }
+        setSeedingProgress(prev => ({ ...prev, current: prev.current + 1 }));
+    }
+
+    toast({
+        title: "Curriculum Sync Complete",
+        description: `Successfully synced ${successCount} courses. ${failCount} errors.`,
+        variant: failCount > 0 ? "destructive" : "success",
+    });
+
+    setIsBulkSeeding(false);
+    await fetchCourses();
+  };
+
   const handleFormSubmit = async (data: CourseFormData) => {
     setIsSubmitting(true);
     try {
@@ -94,6 +160,8 @@ export function CourseManager() {
         const courseDoc = doc(db, 'courses', editingCourse.id);
         await updateDoc(courseDoc, validatedData);
       } else {
+        // For new courses, we need a way to generate a unique ID.
+        // For simplicity, we'll use a Firestore-generated ID.
         await addDoc(collection(db, 'courses'), validatedData);
       }
 
@@ -182,15 +250,43 @@ export function CourseManager() {
 
   return (
     <TooltipProvider>
-      <div className="flex justify-end mb-4 gap-2">
-        <Button variant="outline" onClick={fetchCourses} disabled={isLoading}>
-          <RefreshCw className="mr-2 h-4 w-4" />
-          Refresh
-        </Button>
-        <Button onClick={openAddDialog}>
-          <Library className="mr-2 h-4 w-4" />
-          Add Course
-        </Button>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 bg-primary/10 p-6 rounded-xl border border-primary/20">
+        <div>
+            <h2 className="text-xl font-headline font-bold flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-primary" />
+                Curriculum Hub
+            </h2>
+            <p className="text-sm text-muted-foreground">
+                Manage the platform's core content and database synchronization.
+            </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+            <Button variant="outline" onClick={fetchCourses} disabled={isLoading}>
+                <RefreshCw className={cn("mr-2 h-4 w-4", isLoading && "animate-spin")} />
+                Refresh List
+            </Button>
+            <Button 
+                onClick={handleForceSyncAll} 
+                disabled={isBulkSeeding || isLoading}
+                className="bg-primary hover:bg-primary/90 text-white"
+            >
+                {isBulkSeeding ? (
+                    <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Syncing ({seedingProgress.current}/{seedingProgress.total})
+                    </>
+                ) : (
+                    <>
+                        <UploadCloud className="mr-2 h-4 w-4" />
+                        Sync Enriched Curriculum
+                    </>
+                )}
+            </Button>
+            <Button onClick={openAddDialog}>
+                <Library className="mr-2 h-4 w-4" />
+                Add New Course
+            </Button>
+        </div>
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={onDialogClose}>
@@ -285,9 +381,31 @@ export function CourseManager() {
       </Card>
       
        <Card>
-        <CardHeader>
-            <CardTitle>Unseeded Courses ({unseededCourses.length})</CardTitle>
-            <CardDescription>These courses exist in your codebase but have not been added to the database. Click 'Seed' to add them one by one.</CardDescription>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0">
+            <div>
+                <CardTitle>Unseeded Courses ({unseededCourses.length})</CardTitle>
+                <CardDescription>These courses exist in your codebase but have not been added to the database.</CardDescription>
+            </div>
+            {unseededCourses.length > 0 && (
+                <Button 
+                    onClick={handleSeedAll} 
+                    disabled={isBulkSeeding}
+                    variant="default"
+                    className="bg-primary hover:bg-primary/90"
+                >
+                    {isBulkSeeding ? (
+                        <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Seeding ({seedingProgress.current}/{seedingProgress.total})
+                        </>
+                    ) : (
+                        <>
+                            <UploadCloud className="mr-2 h-4 w-4" />
+                            Seed All {unseededCourses.length} Courses
+                        </>
+                    )}
+                </Button>
+            )}
         </CardHeader>
         <CardContent>
             {unseededCourses.length > 0 ? (
