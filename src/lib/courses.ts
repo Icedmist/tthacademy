@@ -76,66 +76,215 @@ export const courses: Omit<Course, 'progress'>[] = [
     id: 'futures-b-02',
     title: 'Futures Markets Overview',
     description: 'Explore the different types of futures markets available to trade.',
-    longDescription: 'Gain a broad understanding of the various futures markets, including commodities, financials, and equity indices. Learn what makes each market unique.',
+    longDescription: 'Gain a broad understanding of the various futures markets, including commodities, financials, and equity indices. Learn what makes each market unique and how to choose which ones to focus on.',
     category: 'Futures Trading',
     level: 'Beginner',
     duration: '4h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/futures-b-02/600/400',
-    modules: [{ title: 'Market Types', lessons: [{ title: 'Commodities vs. Financials', content: 'Explore the differences between commodity (e.g., oil, corn) and financial (e.g., S&P 500, bonds) futures. We discuss their respective participants, volatility factors, and economic significance.', duration: '1h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What are the main economic drivers of a commodity futures market like crude oil, and how do they differ from the drivers of an equity index future like the E-mini S&P 500?' }]
+    modules: [
+      {
+        title: 'Physical Commodities',
+        lessons: [
+          { 
+            title: 'Energy and Metals', 
+            content: 'Dive into the highly volatile world of crude oil, natural gas, gold, and silver futures. Understand how global supply chains and geopolitical events drive these prices.', 
+            duration: '1h', 
+            videoUrl: 'https://www.youtube.com/watch?v=5VjIdqGk1Z8',
+            assignment: 'Identify two geopolitical events in the last 12 months that caused a spike in crude oil prices.',
+            completed: false 
+          },
+          { 
+            title: 'Agricultural Futures', 
+            content: 'Learn about the "softs" and "grains" - from coffee and sugar to corn and wheat. Discover how weather patterns and harvest cycles affect your trades.', 
+            duration: '1h', 
+            videoUrl: 'https://www.youtube.com/watch?v=R9pDuxo4d90',
+            assignment: 'What is a "WASDE" report and why do agricultural traders watch it so closely?',
+            completed: false 
+          }
+        ]
+      },
+      {
+        title: 'Financial Futures',
+        lessons: [
+          { 
+            title: 'Equity Indices and Interest Rates', 
+            content: 'Understand the E-mini S&P 500, Nasdaq 100, and Treasury Bond futures. Learn how these instruments react to interest rate changes and corporate earnings.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=q6eS8C2E7vM',
+            assignment: 'Explain why a rise in interest rates typically causes Treasury Bond prices to fall.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'Compare physical commodity futures with financial index futures. What are the key differences in how they are settled at expiration?' }]
   },
   {
     id: 'futures-b-03',
     title: 'Basic Futures Trading Strategies',
     description: 'Learn simple, effective strategies for entering and exiting trades.',
-    longDescription: 'This course introduces foundational trading strategies that you can apply immediately. Learn about trend-following, range trading, and breakout strategies.',
+    longDescription: 'This course introduces foundational trading strategies that you can apply immediately. Learn about trend-following, range trading, and breakout strategies for different market environments.',
     category: 'Futures Trading',
     level: 'Beginner',
     duration: '6h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/futures-b-03/600/400',
-    modules: [{ title: 'Core Strategies', lessons: [{ title: 'Trend Following', content: 'Learn how to identify the direction of the market trend using moving averages and other indicators, and how to place trades that align with that trend for higher probability outcomes.', duration: '1.5h', completed: false }] }],
-    finalAssessment: [{ questionText: 'Describe a simple trend-following strategy using a 50-period moving average. What are the entry and exit rules?' }]
+    modules: [
+      {
+        title: 'Strategic Foundations',
+        lessons: [
+          { 
+            title: 'Trend Following Basics', 
+            content: 'Trend following is the cornerstone of many successful trading systems. Learn how to identify a trend and use moving averages to confirm direction.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=I0vI_v8EayA',
+            assignment: 'Open a 1-hour chart of any future and identify three clear uptrends and three clear downtrends.',
+            completed: false 
+          },
+          { 
+            title: 'Support and Resistance Trading', 
+            content: 'Learn how to find "walls" in the market where price is likely to bounce. We cover horizontal levels and dynamic support using trendlines.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=w6-qU9v9e9E',
+            assignment: 'Draw three horizontal support/resistance lines on a daily chart and explain why you chose those specific levels.',
+            completed: false 
+          }
+        ]
+      },
+      {
+        title: 'Breakout Strategies',
+        lessons: [
+          { 
+            title: 'Identifying High-Probability Breakouts', 
+            content: 'Trading breakouts can be highly profitable but also risky due to "fakeouts". Learn how to use volume to confirm a breakout.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=5P2sBf6Daqc',
+            assignment: 'Define a "false breakout" and describe one way to filter it out using an additional indicator.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'Describe the three core components of a trading strategy: Entry, Exit, and Risk Management, using the Trend Following approach as an example.' }]
   },
   {
     id: 'futures-b-04',
     title: 'Technical Analysis for Futures',
     description: 'Understand how to read charts and use indicators to make trading decisions.',
-    longDescription: 'Technical analysis is a cornerstone of trading. This course covers chart patterns, support and resistance, moving averages, and other key indicators.',
+    longDescription: 'Technical analysis is a cornerstone of futures trading. This course covers chart patterns, support and resistance, moving averages, and other key indicators that help you time your entries and exits.',
     category: 'Futures Trading',
     level: 'Beginner',
     duration: '7h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/futures-b-04/600/400',
-    modules: [{ title: 'Chart Reading', lessons: [{ title: 'Support and Resistance', content: 'Learn to identify key price levels where buying or selling pressure is expected to be strong. This forms the basis for many trading decisions and risk management techniques.', duration: '2h', completed: false }] }],
-    finalAssessment: [{ questionText: 'What is a support level, how is it identified on a chart, and how might a trader use it to make a trading decision?' }]
+    modules: [
+      {
+        title: 'Charting Foundations',
+        lessons: [
+          { 
+            title: 'Candlestick Anatomy', 
+            content: 'Learn how to read price action through Japanese candlesticks. We cover open, high, low, and close values and what they tell us about market sentiment.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=5VjIdqGk1Z8',
+            assignment: 'Identify a "Doji" and a "Hammer" candle on a recent daily gold chart.',
+            completed: false 
+          },
+          { 
+            title: 'Moving Averages', 
+            content: 'Moving averages smooth out price data to identify the trend. Learn the difference between Simple (SMA) and Exponential (EMA) moving averages.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=R9pDuxo4d90',
+            assignment: 'Plot a 200-period EMA on a Nasdaq chart and describe what happens when price touches it.',
+            completed: false 
+          }
+        ]
+      },
+      {
+        title: 'Indicators and Oscillators',
+        lessons: [
+          { 
+            title: 'RSI and Overbought/Oversold', 
+            content: 'The Relative Strength Index (RSI) helps identify potential reversal points. Learn how to use it to spot momentum divergence.', 
+            duration: '3h', 
+            videoUrl: 'https://www.youtube.com/watch?v=I0vI_v8EayA',
+            assignment: 'Find a recent example where RSI divergence predicted a trend change in the Crude Oil market.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'Explain how the combination of a moving average and a candlestick pattern (like a hammer) can create a high-probability trading signal.' }]
   },
   {
     id: 'futures-b-05',
     title: 'Fundamental Analysis in Futures',
     description: 'Learn how economic data and news events impact futures prices.',
-    longDescription: 'Go beyond the charts to understand the real-world factors that drive markets. This course covers supply and demand, economic reports, and geopolitical events.',
+    longDescription: 'Go beyond the charts to understand the real-world factors that drive markets. This course covers supply and demand, economic reports, and geopolitical events that move millions.',
     category: 'Futures Trading',
     level: 'Beginner',
     duration: '5h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/futures-b-05/600/400',
-    modules: [{ title: 'Market Drivers', lessons: [{ title: 'Supply and Demand', content: 'Understand the primary driver of all markets. This lesson covers how to analyze reports on production, inventory, and consumption for commodities.', duration: '1h', completed: false }] }],
-    finalAssessment: [{ questionText: 'How might a government report showing higher-than-expected crop yields affect a corn futures contract? Explain your reasoning.' }]
+    modules: [
+      {
+        title: 'Economic Drivers',
+        lessons: [
+          { 
+            title: 'Interest Rates and the Fed', 
+            content: 'Interest rates are the lifeblood of the financial markets. Learn how the Federal Reserve\'s decisions impact equity indices and bond futures.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=q6eS8C2E7vM',
+            assignment: 'Research the most recent FOMC meeting results and summarize how the market reacted.',
+            completed: false 
+          },
+          { 
+            title: 'Inventory and Supply Reports', 
+            content: 'For commodity traders, reports like the EIA Petroleum Status Report or the USDA WASDE are critical. Learn how to interpret these "shocks".', 
+            duration: '3h', 
+            videoUrl: 'https://www.youtube.com/watch?v=w6-qU9v9e9E',
+            assignment: 'Look up the next release date for the EIA Weekly Petroleum Status Report.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'Explain the concept of "Contango" and "Backwardation" in the context of fundamental supply and demand for commodity futures.' }]
   },
   {
     id: 'futures-b-06',
     title: 'Risk Management Essentials',
     description: 'Master the critical skill of protecting your capital while trading.',
-    longDescription: 'The most important aspect of trading is managing risk. Learn about position sizing, stop-loss orders, and maintaining a favorable risk-to-reward ratio.',
+    longDescription: 'The most important aspect of trading is managing risk. Learn about position sizing, stop-loss orders, and maintaining a favorable risk-to-reward ratio to ensure long-term survival.',
     category: 'Futures Trading',
     level: 'Beginner',
     duration: '4h', instructor: 'TTH Academy',
     price: 0,
     imageUrl: 'https://picsum.photos/seed/futures-b-06/600/400',
-    modules: [{ title: 'Capital Protection', lessons: [{ title: 'Position Sizing', content: 'Learn how to calculate the correct trade size based on your account balance and risk tolerance, ensuring no single trade can significantly damage your capital.', duration: '1h', completed: false }] }],
-    finalAssessment: [{ questionText: 'Explain the 1% rule of risk management and how to apply it. If you have a $10,000 account, what is your maximum risk per trade?' }]
+    modules: [
+      {
+        title: 'Capital Preservation',
+        lessons: [
+          { 
+            title: 'The 1% Rule', 
+            content: 'Never risk more than 1% of your account on a single trade. We will show you how to calculate position sizes to stick to this golden rule.', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=5P2sBf6Daqc',
+            assignment: 'If you have a $5,000 account, what is the maximum dollar amount you should risk on one trade according to the 1% rule?',
+            completed: false 
+          },
+          { 
+            title: 'Stop Loss Execution', 
+            content: 'A stop loss is your safety net. Learn the different types of stops: hard stops, trailing stops, and mental stops (and why you should avoid mental stops).', 
+            duration: '2h', 
+            videoUrl: 'https://www.youtube.com/watch?v=I0vI_v8EayA',
+            assignment: 'Explain why keeping a stop loss is more important for futures traders than for traditional buy-and-hold investors.',
+            completed: false 
+          }
+        ]
+      }
+    ],
+    finalAssessment: [{ questionText: 'Calculate the position size for a trade with a $200 stop loss on a $10,000 account. How many contracts can you trade if your maximum risk is 1%?' }]
   },
   {
     id: 'futures-b-07',

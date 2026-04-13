@@ -159,7 +159,9 @@ function LearningInterface() {
         try {
             const res = await handleSubmitAssessment({
                 userId: user.uid,
+                studentName: user.displayName || 'Student',
                 courseId: enrolledCourse.id,
+                courseTitle: enrolledCourse.title,
                 answers: answersArray,
             });
 

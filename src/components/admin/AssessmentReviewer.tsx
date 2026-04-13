@@ -95,7 +95,7 @@ export function AssessmentReviewer({
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Date</TableHead>
-                                <TableHead>Student ID</TableHead>
+                                <TableHead>Student</TableHead>
                                 <TableHead>Course</TableHead>
                                 <TableHead className="text-right">Action</TableHead>
                             </TableRow>
@@ -106,8 +106,8 @@ export function AssessmentReviewer({
                                     <TableCell className="text-xs text-muted-foreground">
                                         {sub.submittedAt.toDate().toLocaleDateString()}
                                     </TableCell>
-                                    <TableCell className="font-mono text-xs">{sub.userId}</TableCell>
-                                    <TableCell className="font-semibold">{sub.courseId}</TableCell>
+                                    <TableCell className="font-semibold">{sub.studentName || sub.userId}</TableCell>
+                                    <TableCell className="text-sm">{sub.courseTitle || sub.courseId}</TableCell>
                                     <TableCell className="text-right">
                                         <Button variant="outline" size="sm" onClick={() => setSelectedSubmission(sub)}>
                                             <Eye className="mr-2 h-4 w-4" /> Review
@@ -131,7 +131,7 @@ export function AssessmentReviewer({
                     <DialogHeader>
                         <DialogTitle>Review Submission</DialogTitle>
                         <DialogDescription>
-                            Course ID: {selectedSubmission?.courseId} | Student: {selectedSubmission?.userId}
+                            Course: {selectedSubmission?.courseTitle || selectedSubmission?.courseId} | Student: {selectedSubmission?.studentName || selectedSubmission?.userId}
                         </DialogDescription>
                     </DialogHeader>
 

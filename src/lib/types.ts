@@ -27,6 +27,8 @@ export const AssessmentSubmissionSchema = z.object({
   instructorName: z.string().optional(),
   feedback: z.string().optional(),
   submittedAt: z.any(), // Firestore Timestamp
+  studentName: z.string().optional(),
+  courseTitle: z.string().optional(),
   updatedAt: z.any().optional(),
 });
 export type AssessmentSubmission = z.infer<typeof AssessmentSubmissionSchema>;
