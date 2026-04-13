@@ -1,4 +1,5 @@
-'use server';
+
+
 
 import { db } from '@/lib/firebase';
 import { collection, getDocs, getDoc, doc, query, where, orderBy, type DocumentData, setDoc, serverTimestamp } from "firebase/firestore";

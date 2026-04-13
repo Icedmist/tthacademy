@@ -1,4 +1,5 @@
-'use server';
+
+
 
 import { enrollInCourse } from "@/services/student-data";
 

@@ -1,5 +1,4 @@
 
-'use server';
 
 import { db } from '@/lib/firebase';
 import { collection, getDocs, getDoc, doc, query, type DocumentData } from "firebase/firestore";
@@ -17,7 +16,13 @@ const toCourse = (doc: DocumentData): Course => {
         id: doc.id,
         progress: data.progress || 0, // Default progress to 0 if not set
     };
-    return CourseSchema.parse(courseWithProgress);
+    try {
+        return CourseSchema.parse(courseWithProgress);
+    } catch (error: any) {
+        console.error(`Validation error for course ${doc.id}:`, error);
+        // Fallback or throw a more descriptive error
+        throw error;
+    }
 };
 
 export const getCourses = cache(async (): Promise<Course[]> => {

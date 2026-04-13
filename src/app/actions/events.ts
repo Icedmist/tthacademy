@@ -1,9 +1,5 @@
-
-'use server';
-
 import { registerForEvent, getEvent } from '@/services/event-data';
-import { sendEventConfirmationEmail } from '@/ai/flows/send-event-confirmation-email-flow';
-import { revalidatePath } from 'next/cache';
+import { safeRevalidatePath } from '@/lib/revalidate';
 
 interface RegistrationResult {
     success: boolean;
@@ -21,18 +17,13 @@ export async function handleEventRegistration(
 
         const event = await getEvent(eventId);
         if (event) {
-            // Trigger the email flow, but don't wait for it to complete
-            sendEventConfirmationEmail({
-                eventName: event.title,
-                eventDate: event.date.toDate().toString(),
-                eventLocation: event.location,
-                userName,
-                userEmail,
-            }).catch(console.error); // Log email errors without blocking the user
+            // TODO: Integrate a standard email service (e.g., Resend, SMTP) 
+            // for event registration confirmations.
+            console.log(`User ${userName} registered for event: ${event.title}`);
         }
 
-        revalidatePath('/events');
-        revalidatePath(`/events/${eventId}/ticket`);
+        await safeRevalidatePath('/events');
+        await safeRevalidatePath(`/events/${eventId}/ticket`);
 
         return { success: true, message: "Successfully registered!" };
     } catch (error) {

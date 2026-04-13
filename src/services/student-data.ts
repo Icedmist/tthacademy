@@ -1,5 +1,4 @@
 
-'use server';
 
 import { db } from '@/lib/firebase';
 import { doc, getDoc, setDoc, updateDoc, collection, getDocs, writeBatch } from "firebase/firestore"; 
@@ -98,7 +97,12 @@ export async function getStudentProgress(
         const finalRole = role !== 'student' ? role : (studentData.role || 'student');
 
         if (finalRole !== studentData.role) {
-            await updateDoc(docRef, { role: finalRole });
+            try {
+                await updateDoc(docRef, { role: finalRole });
+            } catch (error) {
+                console.error("Non-blocking role update failure:", error);
+                // We don't throw here so the user can still see their dashboard
+            }
         }
         
         return {
