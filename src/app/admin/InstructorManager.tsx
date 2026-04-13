@@ -39,7 +39,7 @@ export function InstructorManager() {
       console.error("Failed to fetch instructors", error);
       toast({
         title: "Error",
-        description: `Could not fetch team members: ${(error as Error).message}.`,
+        description: `Could not fetch instructors: ${(error as Error).message}.`,
         variant: "destructive",
       });
     } finally {
@@ -73,6 +73,7 @@ export function InstructorManager() {
         const NewInstructorSchema = InstructorSchema.omit({ id: true });
         const validatedData = NewInstructorSchema.parse({
             name: data.name,
+            email: data.email,
             bio: data.bio,
             socials: data.socials,
             avatarUrl: avatarUrl, // Use the potentially new URL

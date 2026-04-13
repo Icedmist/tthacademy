@@ -16,6 +16,7 @@ const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/web
 
 export const getInstructorFormSchema = (isEditing: boolean) => z.object({
   name: z.string().min(1, 'Name is required'),
+  email: z.string().email('Valid email is required'),
   bio: z.string().min(10, 'Bio must be at least 10 characters'),
   avatarUrl: z.string().url('Must be a valid URL for the avatar image').optional().or(z.literal('')),
   avatarFile: z
@@ -55,7 +56,7 @@ export function InstructorForm({ onSubmit, initialData, isSubmitting, onCancel }
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: initialData?.name ?? '',
-      bio: initialData?.bio ?? '',
+      email: initialData?.email ?? '',
       avatarUrl: initialData?.avatarUrl ?? '',
       socials: {
         twitter: initialData?.socials?.twitter ?? '',
@@ -75,6 +76,19 @@ export function InstructorForm({ onSubmit, initialData, isSubmitting, onCancel }
               <FormLabel>Full Name</FormLabel>
               <FormControl>
                 <Input icon={<User />} placeholder="e.g., Jane Doe" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email Address</FormLabel>
+              <FormControl>
+                <Input placeholder="instructor@example.com" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -44,7 +44,9 @@ export async function submitAssessment(submission: Omit<AssessmentSubmission, 'i
 export async function getPendingSubmissions(instructorId?: string): Promise<AssessmentSubmission[]> {
     if (!db) throw new Error("Firestore not initialized.");
     
-    let q = query(collection(db, 'assessmentSubmissions'), where('status', '==', 'pending'), orderBy('submittedAt', 'desc'));
+    // Note: To use orderBy here, a composite index must be created in Firebase Console.
+    // For now, we fetch all pending and sort in memory if needed, or just let status be the filter.
+    let q = query(collection(db, 'assessmentSubmissions'), where('status', '==', 'pending'));
     
     if (instructorId) {
         // In the future, we can filter by instructorId if we stamp it during submission

@@ -9,6 +9,7 @@ export type CourseLevel = (typeof COURSE_LEVELS)[number];
 export const QuestionSchema = z.object({
   id: z.string().optional(),
   questionText: z.string().min(1, 'Question text cannot be empty'),
+  points: z.number().optional(),
 });
 export type Question = z.infer<typeof QuestionSchema>;
 
@@ -35,6 +36,8 @@ export const LessonSchema = z.object({
   title: z.string().min(1, 'Lesson title cannot be empty'),
   content: z.string().min(1, 'Lesson content cannot be empty'),
   duration: z.string().min(1, 'Lesson duration cannot be empty'),
+  videoUrl: z.string().url('Must be a valid video URL').optional().or(z.literal('')),
+  assignment: z.string().optional(),
   completed: z.boolean().default(false),
 });
 export type Lesson = z.infer<typeof LessonSchema>;

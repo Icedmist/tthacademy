@@ -6,8 +6,8 @@ import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { motion } from 'framer-motion';
 import { useAuth } from "@/hooks/use-auth";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, Suspense } from "react";
 
 export default function SignUpPage() {
   const { user } = useAuth();
@@ -60,8 +60,16 @@ export default function SignUpPage() {
                 </Link>
             </div>
             
-            <SignUpForm />
+            <Suspense fallback={<div className="h-32 flex items-center justify-center"><Loader2 className="animate-spin"/></div>}>
+                <SignUpWithParams />
+            </Suspense>
         </Card>
     </motion.div>
   );
+}
+
+function SignUpWithParams() {
+    const searchParams = useSearchParams();
+    const referralCode = searchParams.get('ref');
+    return <SignUpForm referralCode={referralCode} />;
 }

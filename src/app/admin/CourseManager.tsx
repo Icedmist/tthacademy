@@ -30,6 +30,8 @@ export function CourseManager() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSeeding, setIsSeeding] = useState<string | null>(null); // Store the ID of the course being seeded
+  const [isBulkSeeding, setIsBulkSeeding] = useState(false);
+  const [seedingProgress, setSeedingProgress] = useState({ current: 0, total: 0 });
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const { toast } = useToast();
@@ -84,6 +86,37 @@ export function CourseManager() {
     } finally {
         setIsSeeding(null);
     }
+  };
+
+  const handleSeedAll = async () => {
+    if (unseededCourses.length === 0) return;
+    
+    setIsBulkSeeding(true);
+    setSeedingProgress({ current: 0, total: unseededCourses.length });
+    
+    let successCount = 0;
+    let failCount = 0;
+
+    for (const course of unseededCourses) {
+        try {
+            const validatedData = NewCourseSchema.parse(course);
+            await setDoc(doc(db, 'courses', course.id), validatedData);
+            successCount++;
+        } catch (error) {
+            console.error(`Failed to seed course ${course.id}: `, error);
+            failCount++;
+        }
+        setSeedingProgress(prev => ({ ...prev, current: prev.current + 1 }));
+    }
+
+    toast({
+        title: "Bulk Seeding Complete",
+        description: `Seeded ${successCount} courses successfully. ${failCount} failed.`,
+        variant: failCount > 0 ? "destructive" : "success",
+    });
+
+    setIsBulkSeeding(false);
+    await fetchCourses();
   };
 
   const handleFormSubmit = async (data: CourseFormData) => {
@@ -287,9 +320,31 @@ export function CourseManager() {
       </Card>
       
        <Card>
-        <CardHeader>
-            <CardTitle>Unseeded Courses ({unseededCourses.length})</CardTitle>
-            <CardDescription>These courses exist in your codebase but have not been added to the database. Click 'Seed' to add them one by one.</CardDescription>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0">
+            <div>
+                <CardTitle>Unseeded Courses ({unseededCourses.length})</CardTitle>
+                <CardDescription>These courses exist in your codebase but have not been added to the database.</CardDescription>
+            </div>
+            {unseededCourses.length > 0 && (
+                <Button 
+                    onClick={handleSeedAll} 
+                    disabled={isBulkSeeding}
+                    variant="default"
+                    className="bg-primary hover:bg-primary/90"
+                >
+                    {isBulkSeeding ? (
+                        <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Seeding ({seedingProgress.current}/{seedingProgress.total})
+                        </>
+                    ) : (
+                        <>
+                            <UploadCloud className="mr-2 h-4 w-4" />
+                            Seed All {unseededCourses.length} Courses
+                        </>
+                    )}
+                </Button>
+            )}
         </CardHeader>
         <CardContent>
             {unseededCourses.length > 0 ? (

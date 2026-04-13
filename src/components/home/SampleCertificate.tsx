@@ -54,7 +54,7 @@ export function SampleCertificate() {
                     <div className="flex items-end gap-4">
                         {url ? (
                           <div className="bg-white p-1 rounded-md">
-                            <QRCode value={url} size={80} level="L" />
+                            <QRCode title="Certificate Verification" value={url} size={80} level="L" />
                           </div>
                         ) : (
                           <div className="w-[88px] h-[88px] bg-muted/20 rounded-md animate-pulse" />
