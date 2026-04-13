@@ -141,6 +141,7 @@ export async function getStudentProgress(
                 overallProgress: 0,
                 completedCourses: 0,
                 coursesInProgress: 0,
+                assessments: {},
             };
         }
         
@@ -151,6 +152,7 @@ export async function getStudentProgress(
              overallProgress: 0,
              completedCourses: 0,
              coursesInProgress: 0,
+             assessments: {},
         };
     }
 }

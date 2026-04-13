@@ -150,11 +150,17 @@ export default function AdminUsersPage() {
     }
   }
 
-
-    const updateRole = async (userId: string, newRole: string) => {
-        await updateDoc(doc(db, 'studentProgress', userId), { role: newRole });
-        setUsers(users.map(u => u.studentId === userId ? { ...u, role: newRole } : u));
-    };
+  return (
+    <TooltipProvider>
+      <div className="flex items-center gap-2 mb-4">
+          <Users className="h-8 w-8 text-primary" />
+          <h1 className="text-3xl md:text-4xl font-headline font-bold">
+              User Management
+          </h1>
+      </div>
+      <p className="text-muted-foreground mb-8">
+          Manage user roles and monitor student progress across the academy.
+      </p>
 
       <Dialog open={!!editingUser} onOpenChange={(isOpen) => !isOpen && setEditingUser(null)}>
         <DialogContent>
@@ -171,6 +177,7 @@ export default function AdminUsersPage() {
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="student">Student</SelectItem>
+                        <SelectItem value="instructor">Instructor</SelectItem>
                         <SelectItem value="admin">Admin</SelectItem>
                     </SelectContent>
                 </Select>
@@ -227,8 +234,8 @@ export default function AdminUsersPage() {
                     <Tooltip>
                         <TooltipTrigger asChild>
                            <Button variant="ghost" size="icon" onClick={() => openRoleDialog(user)} disabled={ADMIN_UIDS.includes(user.studentId)}>
-                              <UserCog className="h-4 w-4" />
-                          </Button>
+                               <UserCog className="h-4 w-4" />
+                           </Button>
                         </TooltipTrigger>
                         <TooltipContent><p>Manage Role</p></TooltipContent>
                     </Tooltip>

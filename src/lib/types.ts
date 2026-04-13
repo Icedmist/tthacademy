@@ -182,6 +182,7 @@ export type Attendee = z.infer<typeof AttendeeSchema>;
 export const InstructorSchema = z.object({
   id: z.string(),
   name: z.string().min(1, 'Name is required'),
+  email: z.string().email(),
   bio: z.string().min(10, 'Bio must be at least 10 characters'),
   avatarUrl: z.string().url('Must be a valid URL for the avatar image'),
   socials: z.object({

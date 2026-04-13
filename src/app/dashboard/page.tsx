@@ -3,11 +3,9 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import {
-  getStudentProgress,
-  type StudentProgress,
-} from '@/services/student-data';
+import { getStudentProgress } from '@/services/student-data';
 import { getRecommendations } from '@/app/actions/recommend';
+import type { CourseCategory, Course, StudentProgress } from '@/lib/types';
 import {
   Card,
   CardContent,
@@ -29,7 +27,6 @@ import { Trophy, BookOpen, LineChart, CheckCircle, Lightbulb, AlertTriangle, Loa
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
 import { COURSE_CATEGORY_COLORS } from '@/lib/constants';
-import type { CourseCategory, Course } from '@/lib/types';
 import { CourseCard } from '@/components/courses/CourseCard';
 import { useAuth } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
@@ -136,13 +133,18 @@ export default function DashboardPage() {
         return;
     }
 
+    if (profile?.role === 'instructor') {
+        router.push('/instructor');
+        return;
+    }
+
     // Wait for profile to load before proceeding
     if (!profile) {
       setIsDataLoading(true);
       return;
     }
 
-    // If profile is loaded but not a student, stop loading
+    // Only allow students to stay on this specific dashboard
     if (profile.role !== 'student') {
       setIsDataLoading(false);
       return;
@@ -191,13 +193,13 @@ export default function DashboardPage() {
   }
 
   const inProgressCourses = data.enrolledCourses.filter(
-    (c) => c.progress < 100
+    (c: Course) => c.progress! < 100
   );
   const completedCourses = data.enrolledCourses.filter(
-    (c) => c.progress === 100
+    (c: Course) => c.progress === 100
   );
 
-  const categoryCounts = data.enrolledCourses.reduce((acc, course) => {
+  const categoryCounts = data.enrolledCourses.reduce((acc: Record<string, number>, course: Course) => {
     acc[course.category] = (acc[course.category] || 0) + 1;
     return acc;
   }, {} as Record<CourseCategory, number>);
@@ -225,8 +227,8 @@ export default function DashboardPage() {
     return `/learn/${course.id}`;
   };
 
-  const inProgressCategories = useMemo(() => {
-    const categories = new Set(inProgressCourses.map(c => c.category));
+  const inProgressCategories = useMemo<string[]>(() => {
+    const categories = new Set<string>(inProgressCourses.map(c => c.category));
     return ['All', ...Array.from(categories)];
   }, [inProgressCourses]);
 
@@ -244,10 +246,9 @@ export default function DashboardPage() {
       >
         Welcome back, {user?.displayName || data.name}!
       </motion.h1>
-      </motion.p>
 
       {/* Assessment Notifications */}
-      {Object.entries(data.assessments || {}).some(([_, status]) => status.status !== 'pending') && (
+      {Object.entries(data.assessments || {}).some(([_, status]: [string, any]) => status.status !== 'pending') && (
         <motion.div variants={cardVariants} custom={2} className="mb-8">
             <Card className="bg-primary/5 border-primary/20">
                 <CardHeader className="py-4">
@@ -257,7 +258,7 @@ export default function DashboardPage() {
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                    {Object.entries(data.assessments || {}).filter(([_, s]) => s.lastFeedback).map(([courseId, status]) => (
+                    {Object.entries(data.assessments || {}).filter(([_, s]: [string, any]) => s.lastFeedback).map(([courseId, status]: [string, any]) => (
                         <div key={courseId} className="bg-background/50 p-3 rounded-lg border text-sm">
                             <div className="flex justify-between mb-1">
                                 <span className="font-bold">Course Ref: {courseId}</span>
@@ -343,19 +344,31 @@ export default function DashboardPage() {
                                 <TabsTrigger key={cat} value={cat} className="text-xs px-1">{cat}</TabsTrigger>
                               ))}
                           </TabsList>
-                          {inProgressCategories.map(cat => (
+                          {inProgressCategories.map((cat: string) => (
                               <TabsContent key={cat} value={cat} className="space-y-2 mt-4">
-                                {inProgressCourses.filter(c => cat === 'All' || c.category === cat).slice(0,3).map(course => (
-                                     <div key={course.id} className="bg-card/80 p-3 rounded-lg">
-                                        <div className="flex justify-between items-center mb-2">
-                                            <h4 className="font-semibold text-sm truncate pr-4">{course.title}</h4>
-                                            <Link href={getContinueLink(course)}>
-                                                <Button size="sm" className="text-xs shrink-0">Continue</Button>
-                                            </Link>
+                                 {inProgressCourses.filter((c: Course) => cat === 'All' || c.category === cat).slice(0,3).map((course: Course) => {
+                                     const assessment = data.assessments?.[course.id];
+                                     const isAwaitingReview = assessment?.status === 'pending';
+                                     
+                                     return (
+                                        <div key={course.id} className="bg-card/80 p-3 rounded-lg border border-border/10">
+                                            <div className="flex justify-between items-center mb-2">
+                                                <div className="flex flex-col truncate pr-4">
+                                                    <h4 className="font-semibold text-sm truncate">{course.title}</h4>
+                                                    {isAwaitingReview && (
+                                                        <span className="text-[10px] text-yellow-500 font-bold flex items-center gap-1">
+                                                            <Loader2 className="h-2 w-2 animate-spin" /> Awaiting Review
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <Link href={getContinueLink(course)}>
+                                                    <Button size="sm" className="text-xs shrink-0">Continue</Button>
+                                                </Link>
+                                            </div>
+                                            <Progress value={course.progress} className="h-2"/>
                                         </div>
-                                        <Progress value={course.progress} className="h-2"/>
-                                    </div>
-                                ))}
+                                     )
+                                 })}
                               </TabsContent>
                           ))}
                         </Tabs>
@@ -403,7 +416,7 @@ export default function DashboardPage() {
            <CardContent>
              {completedCourses.length > 0 ? (
                <ul className="space-y-3">
-                 {completedCourses.map((course) => (
+                 {completedCourses.map((course: Course) => (
                    <li key={course.id} className="flex items-center justify-between bg-card/80 p-3 rounded-lg">
                      <div className="flex items-center gap-3">
                        <CheckCircle className="h-5 w-5 text-success" />
