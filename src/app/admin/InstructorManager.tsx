@@ -73,6 +73,7 @@ export function InstructorManager() {
         const NewInstructorSchema = InstructorSchema.omit({ id: true });
         const validatedData = NewInstructorSchema.parse({
             name: data.name,
+            email: data.email,
             bio: data.bio,
             socials: data.socials,
             avatarUrl: avatarUrl, // Use the potentially new URL
